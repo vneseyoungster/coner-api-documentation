@@ -455,7 +455,7 @@ components:
             properties:
               error:
                 type: string
-                example: Unauthorized: JWT token missing or invalid
+                example: "Unauthorized: JWT token missing or invalid"
 
   schemas:
     SignUpRequest:
