@@ -429,12 +429,10 @@
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-content">
-            <a href="#overview">Overview</a>
             <a href="#authentication">Authentication</a>
             <a href="#health">Health Check</a>
             <a href="#auth-endpoints">Auth Endpoints</a>
             <a href="#profile-endpoints">Profile Endpoints</a>
-            <a href="#data-models">Data Models</a>
             <a href="#errors">Error Handling</a>
             <a href="#examples">Examples</a>
         </div>
@@ -442,39 +440,6 @@
 
     <!-- Main Content -->
     <div class="container">
-        <!-- Overview Section -->
-        <section id="overview" class="section">
-            <h2>Overview</h2>
-            <p>The Coner Backend API is a RESTful service built with Express.js and TypeScript, following Domain-Driven Design (DDD) principles. It provides authentication and user profile management services for the Coner platform.</p>
-
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h4>Supabase Integration</h4>
-                    <p>JWT-based authentication with Supabase Auth for secure user management.</p>
-                </div>
-                <div class="feature-card">
-                    <h4>Profile Management</h4>
-                    <p>Comprehensive user profile system with first-time setup flow.</p>
-                </div>
-                <div class="feature-card">
-                    <h4>Global Logout</h4>
-                    <p>Immediate session invalidation across all devices for enhanced security.</p>
-                </div>
-                <div class="feature-card">
-                    <h4>Type Safety</h4>
-                    <p>Full TypeScript implementation with Zod-based schema validation.</p>
-                </div>
-            </div>
-
-            <h3>Architecture</h3>
-            <ul>
-                <li><strong>Authentication:</strong> Hybrid Supabase + PostgreSQL (JWT verification with database cutoff)</li>
-                <li><strong>Database:</strong> PostgreSQL with connection pooling</li>
-                <li><strong>Caching:</strong> Redis for session management and caching</li>
-                <li><strong>Events:</strong> In-memory event bus for domain events</li>
-            </ul>
-        </section>
-
         <!-- Authentication Section -->
         <section id="authentication" class="section">
             <h2>Authentication</h2>
@@ -916,68 +881,6 @@
   <span class="json-key">"is_deleted"</span>: <span class="json-boolean">false</span>
 }</pre>
                 </div>
-            </div>
-        </section>
-
-        <!-- Data Models -->
-        <section id="data-models" class="section">
-            <h2>Data Models</h2>
-
-            <h3>User Profile Schema</h3>
-            <p>The <code>user_profiles</code> table stores all user information:</p>
-
-            <div class="code-block">
-                <div class="code-header">
-                    <span>SQL Schema</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre>CREATE TABLE user_profiles (
-  user_id           uuid PRIMARY KEY,
-  display_name      varchar(100),
-  profession        varchar(200),
-  company           varchar(200),
-  bio               text,
-  skills            text[],
-  work_style        varchar(50),
-  avatar_url        text,
-  linkedin_url      text,
-  portfolio_url     text,
-  years_experience  integer,
-  email             varchar(255),
-  is_email_verified boolean NOT NULL DEFAULT false,
-  full_name         varchar(255),
-  dob               date,
-  sex               varchar(10),
-  phone_number      varchar(15),
-  address           varchar(500),
-  school            varchar(255),
-  major             varchar(255),
-  logout_at         timestamptz,
-  created_at        timestamptz NOT NULL DEFAULT now(),
-  updated_at        timestamptz NOT NULL DEFAULT now(),
-  last_seen_at      timestamptz NOT NULL DEFAULT now(),
-  is_deleted        boolean NOT NULL DEFAULT false
-);</pre>
-            </div>
-
-            <h3>Enum Types</h3>
-
-            <h4>Sex</h4>
-            <div class="code-block">
-                <div class="code-header">
-                    <span>TypeScript</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre>type Sex = 'male' | 'female' | 'other'</pre>
-            </div>
-
-            <h4>Work Style (Legacy)</h4>
-            <div class="code-block">
-                <div class="code-header">
-                    <span>TypeScript</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre>type WorkStyle = 'focus' | 'collaborative' | 'flexible'</pre>
             </div>
         </section>
 
