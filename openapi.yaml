@@ -1,0 +1,753 @@
+openapi: 3.0.3
+info:
+  title: Coner Backend API
+  description: |
+    RESTful API for the Coner platform - a service for remote workers and freelancers to find co-working spaces and form professional connections.
+
+    ## Features
+    - Supabase Authentication Integration with JWT-based authentication
+    - Comprehensive user profile management with first-time setup flow
+    - Global logout with immediate session invalidation
+    - Auto-profile creation on first login
+    - Full TypeScript implementation with Zod validation
+
+    ## Architecture
+    - **Authentication**: Hybrid Supabase + PostgreSQL (JWT verification with database cutoff)
+    - **Database**: PostgreSQL with connection pooling
+    - **Caching**: Redis for session management
+    - **Events**: In-memory event bus for domain events
+  version: 0.4.0
+  contact:
+    name: Coner Development Team
+  license:
+    name: Proprietary
+
+servers:
+  - url: http://localhost:8080
+    description: Development server
+  - url: https://api.coner.app
+    description: Production server (placeholder)
+
+tags:
+  - name: Health
+    description: Health check endpoints
+  - name: Authentication
+    description: User authentication and session management
+  - name: User Profile
+    description: User profile management endpoints
+
+security:
+  - BearerAuth: []
+
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      summary: System health check
+      description: Checks the health status of the API server, database, and Redis
+      operationId: healthCheck
+      security: []
+      responses:
+        '200':
+          description: System is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  db:
+                    type: boolean
+                    example: true
+                  redis:
+                    type: string
+                    example: ok
+        '500':
+          description: System is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/health:
+    get:
+      tags:
+        - Authentication
+      summary: Auth service health check
+      description: Simple health check for the authentication service
+      operationId: authHealthCheck
+      security: []
+      responses:
+        '200':
+          description: Auth service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  service:
+                    type: string
+                    example: auth
+
+  /auth/signup:
+    post:
+      tags:
+        - Authentication
+      summary: Create new user account
+      description: Register a new user with email and password
+      operationId: signUp
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequest'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                    format: uuid
+                    example: 550e8400-e29b-41d4-a716-446655440000
+        '400':
+          description: Validation error or email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '500':
+          description: Server error during account creation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/signin:
+    post:
+      tags:
+        - Authentication
+      summary: Authenticate user
+      description: Sign in with email and password to receive JWT tokens
+      operationId: signIn
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokens'
+        '400':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error during authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/me:
+    get:
+      tags:
+        - Authentication
+      summary: Get current user
+      description: Retrieve information about the currently authenticated user
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: Current user information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      email:
+                        type: string
+                        format: email
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/logout-all:
+    post:
+      tags:
+        - Authentication
+      summary: Global logout
+      description: |
+        Invalidate all active sessions for the current user across all devices.
+
+        This endpoint:
+        1. Sets logout_at = NOW() in the database (immediate cutoff)
+        2. Calls Supabase Admin API to revoke all refresh tokens
+        3. Purges middleware cache for instant invalidation
+      operationId: logoutAll
+      responses:
+        '204':
+          description: All sessions invalidated successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          description: Failed to revoke tokens
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/bootstrap:
+    post:
+      tags:
+        - Authentication
+      summary: Bootstrap profile
+      description: Explicitly create user profile (optional - normally done automatically via middleware)
+      operationId: bootstrapProfile
+      responses:
+        '200':
+          description: Profile created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/google/url:
+    get:
+      tags:
+        - Authentication
+      summary: Get Google OAuth URL
+      description: Generate a Google OAuth authorization URL for manual testing
+      operationId: getGoogleOAuthUrl
+      security: []
+      responses:
+        '200':
+          description: Google OAuth URL generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                    example: https://your-project.supabase.co/auth/v1/authorize?provider=google&redirect_to=...
+
+  /auth/callback:
+    get:
+      tags:
+        - Authentication
+      summary: OAuth callback
+      description: OAuth callback endpoint for manual testing. Returns HTML page with instructions to extract tokens from URL fragment
+      operationId: oauthCallback
+      security: []
+      responses:
+        '200':
+          description: Callback page with token extraction instructions
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /users/me:
+    get:
+      tags:
+        - User Profile
+      summary: Get legacy profile
+      description: Get basic profile information (legacy endpoint)
+      operationId: getLegacyProfile
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyProfile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - User Profile
+      summary: Update legacy profile
+      description: Update basic profile fields (legacy endpoint)
+      operationId: updateLegacyProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LegacyProfileUpdate'
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyProfile'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /users/profile:
+    get:
+      tags:
+        - User Profile
+      summary: Get current profile
+      description: Get detailed profile information for the authenticated user
+      operationId: getProfile
+      responses:
+        '200':
+          description: Profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    patch:
+      tags:
+        - User Profile
+      summary: Update profile
+      description: |
+        Update profile fields after first-time setup (partial updates allowed).
+
+        **Important Notes:**
+        - Locked fields: `full_name` and `sex` cannot be changed after first-time setup
+        - All fields are optional - only include fields you want to update
+        - Omitted fields will retain their current values
+      operationId: updateProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdate'
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Validation error or attempting to update locked fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/profile-first:
+    put:
+      tags:
+        - User Profile
+      summary: First-time profile setup
+      description: |
+        Complete the profile with all required information (first-time setup only).
+
+        **Important Notes:**
+        - This endpoint can only be called **once** per user
+        - All fields are required for first-time setup
+        - Subsequent calls will return 400 Bad Request error
+        - Use PATCH /users/profile for updates after first-time setup
+      operationId: completeProfileFirst
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileFirstTimeSetup'
+      responses:
+        '200':
+          description: Profile initialized successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Validation error or profile already initialized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from /auth/signin endpoint
+
+  responses:
+    Unauthorized:
+      description: Missing or invalid JWT token
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Unauthorized: JWT token missing or invalid
+
+  schemas:
+    SignUpRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: alice@example.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          description: User's password (minimum 8 characters)
+          example: securePass123
+        displayName:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Optional display name
+          example: Alice Smith
+
+    SignInRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: alice@example.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          description: User's password
+          example: securePass123
+
+    AuthTokens:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: JWT access token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        refresh_token:
+          type: string
+          description: Refresh token for obtaining new access tokens
+          example: v1.MRjWyLHe1KIrqT...
+        expires_in:
+          type: integer
+          description: Access token lifetime in seconds
+          example: 3600
+
+    LegacyProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        display_name:
+          type: string
+          nullable: true
+          example: Alice Smith
+        avatar_url:
+          type: string
+          format: uri
+          nullable: true
+          example: https://cdn.example.com/avatar.png
+        email:
+          type: string
+          format: email
+          nullable: true
+          example: alice@example.com
+        profession:
+          type: string
+          nullable: true
+          example: Software Engineer
+        company:
+          type: string
+          nullable: true
+          example: Tech Corp
+        bio:
+          type: string
+          nullable: true
+          example: Passionate about building great products
+        skills:
+          type: array
+          items:
+            type: string
+          nullable: true
+          example: ["JavaScript", "React", "Node.js"]
+        work_style:
+          type: string
+          enum: [focus, collaborative, flexible]
+          nullable: true
+          example: collaborative
+        years_experience:
+          type: integer
+          nullable: true
+          example: 5
+        linkedin_url:
+          type: string
+          format: uri
+          nullable: true
+          example: https://linkedin.com/in/alice
+        portfolio_url:
+          type: string
+          format: uri
+          nullable: true
+          example: https://alice.dev
+        created_at:
+          type: string
+          format: date-time
+          example: 2025-01-15T10:30:00Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2025-01-20T14:22:00Z
+        last_seen_at:
+          type: string
+          format: date-time
+          example: 2025-01-25T09:15:00Z
+        is_deleted:
+          type: boolean
+          example: false
+
+    LegacyProfileUpdate:
+      type: object
+      properties:
+        display_name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: Alice Smith
+        avatar_url:
+          type: string
+          format: uri
+          maxLength: 2048
+          example: https://cdn.example.com/new-avatar.png
+
+    UserProfile:
+      type: object
+      properties:
+        full_name:
+          type: string
+          nullable: true
+          example: Alice Smith
+          description: User's full legal name (locked after first setup)
+        dob:
+          type: string
+          format: date
+          nullable: true
+          example: 1995-03-15
+          description: Date of birth (ISO 8601 format)
+        sex:
+          type: string
+          enum: [male, female, other]
+          nullable: true
+          example: female
+          description: Gender (locked after first setup)
+        phone_number:
+          type: string
+          pattern: '^\d{8,15}$'
+          nullable: true
+          example: "1234567890"
+          description: Phone number (8-15 digits)
+        address:
+          type: string
+          nullable: true
+          example: 123 Main St, San Francisco, CA 94102
+          description: Full address
+        school:
+          type: string
+          nullable: true
+          example: Stanford University
+          description: Educational institution
+        major:
+          type: string
+          nullable: true
+          example: Computer Science
+          description: Field of study
+
+    ProfileFirstTimeSetup:
+      type: object
+      required:
+        - full_name
+        - dob
+        - sex
+        - phone_number
+        - address
+        - school
+        - major
+      properties:
+        full_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: Alice Smith
+          description: User's full legal name (required, locked after setup)
+        dob:
+          type: string
+          format: date
+          example: 1995-03-15
+          description: Date of birth (age must be 0-150 years)
+        sex:
+          type: string
+          enum: [male, female, other]
+          example: female
+          description: Gender (required, locked after setup)
+        phone_number:
+          type: string
+          pattern: '^\d{8,15}$'
+          example: "1234567890"
+          description: Phone number (8-15 digits only)
+        address:
+          type: string
+          minLength: 1
+          maxLength: 500
+          example: 123 Main St, San Francisco, CA 94102
+          description: Full address
+        school:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: Stanford University
+          description: Educational institution
+        major:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: Computer Science
+          description: Field of study
+
+    ProfileUpdate:
+      type: object
+      properties:
+        dob:
+          type: string
+          format: date
+          example: 1995-03-15
+          description: Date of birth (age must be 0-150 years)
+        phone_number:
+          type: string
+          pattern: '^\d{8,15}$'
+          example: "9876543210"
+          description: Phone number (8-15 digits only)
+        address:
+          type: string
+          minLength: 1
+          maxLength: 500
+          example: 456 Oak Ave, New York, NY 10001
+          description: Full address
+        school:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: MIT
+          description: Educational institution
+        major:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: Software Engineering
+          description: Field of study
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Error message here
+
+    ValidationError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: ValidationError
+        details:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            email: ["Please provide a valid email address"]
+            password: ["Password must be at least 8 characters long"]
