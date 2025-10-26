@@ -429,6 +429,7 @@
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-content">
+            <a href="#design-rules">Design Rules</a>
             <a href="#authentication">Authentication</a>
             <a href="#health">Health Check</a>
             <a href="#auth-endpoints">Auth Endpoints</a>
@@ -440,6 +441,128 @@
 
     <!-- Main Content -->
     <div class="container">
+        <!-- Design Rules Section -->
+        <section id="design-rules" class="section">
+            <h2>API Design Rules</h2>
+            <p>Key conventions for the Coner Backend API to ensure consistency and ease of use.</p>
+
+            <h3>Naming Conventions</h3>
+
+            <h4>Snake Case for All Fields</h4>
+            <p><strong>All API field names MUST use snake_case</strong></p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>✅ Correct</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>{
+  <span class="json-key">"user_id"</span>: <span class="json-string">"123"</span>,
+  <span class="json-key">"display_name"</span>: <span class="json-string">"Alice Smith"</span>,
+  <span class="json-key">"avatar_url"</span>: <span class="json-string">"https://example.com/avatar.png"</span>,
+  <span class="json-key">"created_at"</span>: <span class="json-string">"2025-01-15T10:30:00Z"</span>
+}</pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>❌ Incorrect</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>{
+  <span class="json-key">"userId"</span>: <span class="json-string">"123"</span>,
+  <span class="json-key">"DisplayName"</span>: <span class="json-string">"Alice Smith"</span>,
+  <span class="json-key">"avatarURL"</span>: <span class="json-string">"https://example.com/avatar.png"</span>
+}</pre>
+            </div>
+
+            <h4>URL Structure</h4>
+            <ul>
+                <li>Use lowercase letters</li>
+                <li>Use hyphens for multi-word resources (e.g., <code>/auth/logout-all</code>)</li>
+                <li>Use plural nouns for collections (e.g., <code>/users</code>)</li>
+                <li>Maximum 3 levels of nesting</li>
+            </ul>
+
+            <h3>HTTP Response Codes</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Status</th>
+                        <th>Usage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>200</code></td>
+                        <td>OK</td>
+                        <td>Successful GET, PUT, PATCH requests</td>
+                    </tr>
+                    <tr>
+                        <td><code>201</code></td>
+                        <td>Created</td>
+                        <td>Successful POST request that creates a resource</td>
+                    </tr>
+                    <tr>
+                        <td><code>204</code></td>
+                        <td>No Content</td>
+                        <td>Successful DELETE or POST with no response body</td>
+                    </tr>
+                    <tr>
+                        <td><code>400</code></td>
+                        <td>Bad Request</td>
+                        <td>Validation errors, malformed request body</td>
+                    </tr>
+                    <tr>
+                        <td><code>401</code></td>
+                        <td>Unauthorized</td>
+                        <td>Missing or invalid authentication token</td>
+                    </tr>
+                    <tr>
+                        <td><code>403</code></td>
+                        <td>Forbidden</td>
+                        <td>Valid token but insufficient permissions</td>
+                    </tr>
+                    <tr>
+                        <td><code>404</code></td>
+                        <td>Not Found</td>
+                        <td>Resource does not exist</td>
+                    </tr>
+                    <tr>
+                        <td><code>409</code></td>
+                        <td>Conflict</td>
+                        <td>Resource conflict (e.g., email already exists)</td>
+                    </tr>
+                    <tr>
+                        <td><code>500</code></td>
+                        <td>Internal Server Error</td>
+                        <td>Unexpected server error</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Versioning</h3>
+            <p><strong>URL-based versioning using <code>/v{major}</code> prefix</strong></p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>Example URLs</span>
+                </div>
+                <pre>https://api.coner.app/v1/users
+https://api.coner.app/v1/auth/signin</pre>
+            </div>
+
+            <div class="alert info">
+                <strong>Breaking Changes:</strong> Require a new major version (v1 → v2). Examples: removing endpoints, removing required fields, changing field types, renaming fields.
+            </div>
+
+            <div class="alert success">
+                <strong>Non-Breaking Changes:</strong> Can be made within the same version. Examples: adding new endpoints, adding optional fields, bug fixes.
+            </div>
+        </section>
+
         <!-- Authentication Section -->
         <section id="authentication" class="section">
             <h2>Authentication</h2>
