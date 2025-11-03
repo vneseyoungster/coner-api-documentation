@@ -1,0 +1,71 @@
+{
+  "environment": "development",
+  "versions": [
+    {
+      "version": "0.6.0-dev",
+      "date": "2025-11-03",
+      "added": [
+        "GET /users/profile-updated - Check if user has completed profile setup",
+        "POST /users/profile-updated - Set profile completion status flag",
+        "Database field: has_updated_profile for tracking onboarding completion",
+        "Frontend: First-time user profile creation flow with validation",
+        "Frontend: University selection with fuzzy search (fuse.js)",
+        "Frontend: Address dropdown with Vietnamese districts data",
+        "Frontend: Major selection dropdown menu",
+        "Frontend: Google OAuth integration guide for Expo and Supabase",
+        "WebSocket support for real-time chat (WIP)",
+        "POST /matching/preferences - User matching preferences",
+        "GET /matching/suggestions - Get match suggestions",
+        "File upload endpoint for avatar images",
+        "Email verification flow"
+      ],
+      "changed": [
+        "Frontend: Enhanced UX flow for first-time profile creation",
+        "Frontend: Improved keyboard dismiss functionality for form inputs",
+        "Frontend: Better spacing and dropdown menu positioning",
+        "Backend: Extended UserProfileRepository interface with profile status methods",
+        "Backend: Profile service layer with isProfileUpdated and setProfileUpdatedStatus functions",
+        "Migrated to new database schema with better indexing",
+        "Refactored profile module to use DDD architecture",
+        "Updated Zod schemas for stricter validation"
+      ],
+      "deprecated": [
+        "PUT /users/me - Replaced by PATCH /users/profile"
+      ],
+      "removed": [],
+      "fixed": [
+        "Frontend: Address text input field sensitivity issues",
+        "Frontend: Keyboard staying too close to text input field",
+        "Frontend: Dropdown menus being hidden underneath other elements",
+        "Frontend: Auto-close keyboard when tapping outside input fields",
+        "Frontend: Text selection on double-tap in input fields",
+        "Frontend: Address field updates after clearing text",
+        "Profile creation race condition",
+        "JWT token refresh timing issues",
+        "Database connection pool exhaustion"
+      ],
+      "security": [
+        "Implemented Content Security Policy headers",
+        "Added CORS whitelist configuration",
+        "Enhanced password hashing with Argon2"
+      ]
+    },
+    {
+      "version": "0.5.0-beta",
+      "date": "2025-10-28",
+      "added": [
+        "Rate limiting middleware",
+        "Request validation caching"
+      ],
+      "changed": [
+        "Refactored authentication middleware"
+      ],
+      "deprecated": [],
+      "removed": [],
+      "fixed": [
+        "Redis connection pool issues"
+      ],
+      "security": []
+    }
+  ]
+}

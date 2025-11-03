@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Documentation - Coner Backend API</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-environment="development">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <h1>Coner Backend API - Technical Documentation</h1>
+            <p class="version">Loading...</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <!-- Navigation will be loaded dynamically -->
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Design Rules Section -->
+        <section id="design-rules" class="section">
+            <h2>API Design Rules</h2>
+            <p>Key conventions for the Coner Backend API to ensure consistency and ease of use.</p>
+
+            <h3>Naming Conventions</h3>
+
+            <h4>Snake Case for All Fields</h4>
+            <p><strong>All API field names MUST use snake_case</strong></p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>✅ Correct</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>{
+  <span class="json-key">"user_id"</span>: <span class="json-string">"123"</span>,
+  <span class="json-key">"display_name"</span>: <span class="json-string">"Alice Smith"</span>,
+  <span class="json-key">"avatar_url"</span>: <span class="json-string">"https://example.com/avatar.png"</span>,
+  <span class="json-key">"created_at"</span>: <span class="json-string">"2025-01-15T10:30:00Z"</span>
+}</pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>❌ Incorrect</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>{
+  <span class="json-key">"userId"</span>: <span class="json-string">"123"</span>,
+  <span class="json-key">"DisplayName"</span>: <span class="json-string">"Alice Smith"</span>,
+  <span class="json-key">"avatarURL"</span>: <span class="json-string">"https://example.com/avatar.png"</span>
+}</pre>
+            </div>
+
+            <h4>URL Structure</h4>
+            <ul>
+                <li>Use lowercase letters</li>
+                <li>Use hyphens for multi-word resources (e.g., <code>/auth/logout-all</code>)</li>
+                <li>Use plural nouns for collections (e.g., <code>/users</code>)</li>
+                <li>Maximum 3 levels of nesting</li>
+            </ul>
+
+            <h3>HTTP Response Codes</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Status</th>
+                        <th>Usage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>200</code></td>
+                        <td>OK</td>
+                        <td>Successful GET, PUT, PATCH requests</td>
+                    </tr>
+                    <tr>
+                        <td><code>201</code></td>
+                        <td>Created</td>
+                        <td>Successful POST request that creates a resource</td>
+                    </tr>
+                    <tr>
+                        <td><code>204</code></td>
+                        <td>No Content</td>
+                        <td>Successful DELETE or POST with no response body</td>
+                    </tr>
+                    <tr>
+                        <td><code>400</code></td>
+                        <td>Bad Request</td>
+                        <td>Validation errors, malformed request body</td>
+                    </tr>
+                    <tr>
+                        <td><code>401</code></td>
+                        <td>Unauthorized</td>
+                        <td>Missing or invalid authentication token</td>
+                    </tr>
+                    <tr>
+                        <td><code>403</code></td>
+                        <td>Forbidden</td>
+                        <td>Valid token but insufficient permissions</td>
+                    </tr>
+                    <tr>
+                        <td><code>404</code></td>
+                        <td>Not Found</td>
+                        <td>Resource does not exist</td>
+                    </tr>
+                    <tr>
+                        <td><code>409</code></td>
+                        <td>Conflict</td>
+                        <td>Resource conflict (e.g., email already exists)</td>
+                    </tr>
+                    <tr>
+                        <td><code>422</code></td>
+                        <td>Unprocessable Entity</td>
+                        <td>Semantic validation errors</td>
+                    </tr>
+                    <tr>
+                        <td><code>429</code></td>
+                        <td>Too Many Requests</td>
+                        <td>Rate limit exceeded</td>
+                    </tr>
+                    <tr>
+                        <td><code>500</code></td>
+                        <td>Internal Server Error</td>
+                        <td>Unexpected server error</td>
+                    </tr>
+                    <tr>
+                        <td><code>502</code></td>
+                        <td>Bad Gateway</td>
+                        <td>Upstream service failure</td>
+                    </tr>
+                    <tr>
+                        <td><code>503</code></td>
+                        <td>Service Unavailable</td>
+                        <td>Temporary maintenance</td>
+                    </tr>
+                    <tr>
+                        <td><code>504</code></td>
+                        <td>Gateway Timeout</td>
+                        <td>Upstream service timeout</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Versioning</h3>
+            <p><strong>URL-based versioning using <code>/v{major}</code> prefix</strong></p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>Example URLs</span>
+                </div>
+                <pre>https://api.coner.app/v1/users
+https://api.coner.app/v1/auth/signin</pre>
+            </div>
+
+            <div class="alert info">
+                <strong>Breaking Changes:</strong> Require a new major version (v1 → v2). Examples: removing endpoints, removing required fields, changing field types, renaming fields.
+            </div>
+
+            <div class="alert success">
+                <strong>Non-Breaking Changes:</strong> Can be made within the same version. Examples: adding new endpoints, adding optional fields, bug fixes.
+            </div>
+        </section>
+
+        <!-- Authentication Section -->
+        <section id="authentication" class="section">
+            <h2>Authentication</h2>
+
+            <h3>Authentication Flow</h3>
+            <ol>
+                <li><strong>Sign Up:</strong> Create account via <code>/auth/signup</code> with email/password</li>
+                <li><strong>Sign In:</strong> Authenticate via <code>/auth/signin</code> to receive JWT tokens</li>
+                <li><strong>Authorization:</strong> Include JWT in <code>Authorization</code> header for protected routes</li>
+                <li><strong>Auto-profile:</strong> First request automatically creates user profile via <code>ensureProfile</code> middleware</li>
+            </ol>
+
+            <h3>JWT Token Format</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>HTTP Header</span>
+                </div>
+                <pre>Authorization: Bearer &lt;access_token&gt;</pre>
+            </div>
+
+            <h3>Token Verification</h3>
+            <p>All protected routes verify JWT tokens against:</p>
+            <ul>
+                <li><strong>Signature:</strong> Validated using Supabase JWKS endpoint</li>
+                <li><strong>Expiry:</strong> Checked automatically by jose library</li>
+                <li><strong>Issuer:</strong> Verified against Supabase issuer</li>
+                <li><strong>Logout Cutoff:</strong> Compared against user's <code>logout_at</code> timestamp</li>
+            </ul>
+
+            <div class="alert info">
+                <strong>Session Management:</strong> Access tokens typically expire after 1 hour. Use refresh tokens to obtain new access tokens without re-authentication.
+            </div>
+
+            <h3>Global Logout</h3>
+            <p>The <code>POST /auth/logout-all</code> endpoint invalidates all active sessions for the current user across all devices.</p>
+
+            <h4>How It Works</h4>
+            <ol>
+                <li>Sets <code>logout_at = NOW()</code> in the database (immediate cutoff)</li>
+                <li>Calls Supabase Admin API to revoke all refresh tokens</li>
+                <li>Purges middleware cache for instant invalidation</li>
+            </ol>
+
+            <div class="alert warning">
+                <strong>Important:</strong> This will immediately invalidate all tokens for this user, including the one used to make this request.
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <!-- Footer will be loaded dynamically -->
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/scripts.js"></script>
+    <script>
+        // Initialize page
+        initPage('technical-docs.html');
+    </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{
+  "project": {
+    "name": "Coner Backend API",
+    "version": "0.6.0-dev",
+    "lastUpdated": "2025-11-03",
+    "maintainer": "Coner Development Team"
+  },
+  "environments": {
+    "production": {
+      "name": "Production",
+      "baseUrl": "https://api.coner.app",
+      "version": "Not deployed",
+      "status": "pending"
+    },
+    "staging": {
+      "name": "Staging",
+      "baseUrl": "https://staging-api.coner.app",
+      "version": "Not deployed",
+      "status": "pending"
+    },
+    "development": {
+      "name": "Development",
+      "baseUrl": "http://localhost:8080",
+      "version": "0.6.0-dev",
+      "status": "active"
+    }
+  },
+  "navigation": [
+    {
+      "title": "Home",
+      "path": "index.html",
+      "icon": "🏠"
+    },
+    {
+      "title": "API Reference",
+      "path": "api.html",
+      "icon": "📚"
+    },
+    {
+      "title": "Changelog",
+      "path": "changelog.html",
+      "icon": "📋"
+    },
+    {
+      "title": "Technical Docs",
+      "path": "technical-docs.html",
+      "icon": "⚙️"
+    }
+  ]
+}

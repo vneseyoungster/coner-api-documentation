@@ -1,0 +1,38 @@
+{
+  "page": {
+    "title": "Technical Documentation",
+    "description": "API design rules, conventions, and best practices"
+  },
+  "sections": [
+    {
+      "id": "design-rules",
+      "title": "API Design Rules",
+      "icon": "📏",
+      "description": "Key conventions for ensuring API consistency"
+    },
+    {
+      "id": "naming",
+      "title": "Naming Conventions",
+      "icon": "✍️",
+      "description": "Field naming and URL structure standards"
+    },
+    {
+      "id": "http-codes",
+      "title": "HTTP Response Codes",
+      "icon": "🔢",
+      "description": "Standard HTTP status code usage"
+    },
+    {
+      "id": "versioning",
+      "title": "Versioning",
+      "icon": "🔄",
+      "description": "API versioning policy and breaking changes"
+    },
+    {
+      "id": "authentication",
+      "title": "Authentication",
+      "icon": "🔑",
+      "description": "Authentication flow and JWT token management"
+    }
+  ]
+}

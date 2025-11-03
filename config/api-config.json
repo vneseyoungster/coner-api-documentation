@@ -1,0 +1,38 @@
+{
+  "page": {
+    "title": "API Reference",
+    "description": "Complete API endpoint reference with request/response examples"
+  },
+  "sections": [
+    {
+      "id": "health",
+      "title": "Health Check",
+      "icon": "❤️",
+      "description": "Server health status endpoints"
+    },
+    {
+      "id": "auth-endpoints",
+      "title": "Authentication",
+      "icon": "🔐",
+      "description": "User authentication and session management"
+    },
+    {
+      "id": "profile-endpoints",
+      "title": "User Profile",
+      "icon": "👤",
+      "description": "User profile management and updates"
+    },
+    {
+      "id": "errors",
+      "title": "Error Handling",
+      "icon": "⚠️",
+      "description": "Error response formats and status codes"
+    },
+    {
+      "id": "examples",
+      "title": "Examples",
+      "icon": "📝",
+      "description": "Complete usage examples and code samples"
+    }
+  ]
+}

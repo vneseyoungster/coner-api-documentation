@@ -1,6 +1,6 @@
 # Coner Backend API Reference
 
-**Version:** 0.4.0
+**Version:** 0.6.0-dev
 **Base URL:** `http://localhost:8080` (development)
 **Authentication:** Bearer JWT tokens issued by Supabase Auth
 
@@ -742,6 +742,93 @@ Returns the complete updated profile object (same format as GET /users/profile).
 
 ---
 
+#### 6. Check Profile Completion Status
+
+Check whether the user has completed their profile setup.
+
+```http
+GET /users/profile-updated
+Authorization: Bearer <access_token>
+```
+
+**Response (200 OK)**
+
+```json
+{
+  "isUpdated": true
+}
+```
+
+**Field Descriptions**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `isUpdated` | boolean | `true` if user has completed profile setup, `false` otherwise |
+
+**Use Cases**
+
+- Check if user needs to complete onboarding flow
+- Determine whether to show profile setup wizard
+- Track onboarding completion for analytics
+
+**Error Responses**
+
+- `401 Unauthorized`: Missing or invalid JWT token
+- `404 Not Found`: Profile not found
+
+---
+
+#### 7. Set Profile Completion Status
+
+Mark the user's profile as completed or incomplete.
+
+```http
+POST /users/profile-updated
+Authorization: Bearer <access_token>
+```
+
+**Request Body**
+
+```json
+{
+  "status": true
+}
+```
+
+**Validation Rules**
+
+| Field | Type | Required | Validation |
+|-------|------|----------|------------|
+| `status` | boolean | Yes | Must be a boolean value |
+
+**Use Cases**
+
+- Mark profile as completed after first-time setup
+- Reset profile completion status (e.g., when new required fields are added)
+- Track onboarding progress
+
+**Response (200 OK)**
+
+Empty response body on success.
+
+**Error Responses**
+
+- `401 Unauthorized`: Missing or invalid JWT token
+- `400 Bad Request`: Validation error (status is not a boolean)
+- `404 Not Found`: Profile not found
+
+**Example Usage**
+
+```bash
+# Mark profile as completed
+curl -X POST http://localhost:8080/users/profile-updated \
+  -H "Authorization: Bearer <access_token>" \
+  -H "Content-Type: application/json" \
+  -d '{"status": true}'
+```
+
+---
+
 ## Data Models
 
 ### User Profile Schema
@@ -770,6 +857,7 @@ CREATE TABLE user_profiles (
   address           varchar(500),
   school            varchar(255),
   major             varchar(255),
+  has_updated_profile boolean NOT NULL DEFAULT false,
   logout_at         timestamptz,
   created_at        timestamptz NOT NULL DEFAULT now(),
   updated_at        timestamptz NOT NULL DEFAULT now(),
@@ -1111,5 +1199,5 @@ For issues or questions:
 ---
 
 **Maintained by**: Coner Development Team
-**Last Updated**: 2025-10-25
-**API Version**: 0.4.0
+**Last Updated**: 2025-11-03
+**API Version**: 0.6.0-dev

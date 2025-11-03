@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Changelog - Coner Backend API</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-environment="development">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <h1>Coner Backend API</h1>
+            <p class="version">Loading...</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <!-- Navigation will be loaded dynamically -->
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <section class="section">
+            <h2>Changelog</h2>
+            <p>Track changes, new features, and bug fixes across all environments.</p>
+        </section>
+
+        <!-- Environment Tabs -->
+        <div class="tabs" id="changelog-tabs">
+            <!-- Tabs will be loaded dynamically -->
+        </div>
+
+        <!-- Tab Contents -->
+        <div id="prod-content" class="tab-content">
+            <!-- Production changelog will be loaded here -->
+        </div>
+
+        <div id="staging-content" class="tab-content">
+            <!-- Staging changelog will be loaded here -->
+        </div>
+
+        <div id="dev-content" class="tab-content">
+            <!-- Development changelog will be loaded here -->
+        </div>
+
+        <!-- Legend -->
+        <section class="section">
+            <h3>Legend</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div class="alert success">
+                    <strong>✨ Added</strong>
+                    <p>New features or endpoints</p>
+                </div>
+                <div class="alert info">
+                    <strong>🔄 Changed</strong>
+                    <p>Changes to existing functionality</p>
+                </div>
+                <div class="alert warning">
+                    <strong>⚠️ Deprecated</strong>
+                    <p>Soon-to-be-removed features</p>
+                </div>
+                <div class="alert danger">
+                    <strong>🗑️ Removed</strong>
+                    <p>Removed features</p>
+                </div>
+                <div class="alert info" style="background-color: #e0e7ff; border-color: #3730a3; color: #3730a3;">
+                    <strong>🐛 Fixed</strong>
+                    <p>Bug fixes</p>
+                </div>
+                <div class="alert danger" style="background-color: #f3e8ff; border-color: #8b5cf6; color: #6b21a8;">
+                    <strong>🔒 Security</strong>
+                    <p>Security improvements</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Version Policy -->
+        <section class="section">
+            <h3>Versioning Policy</h3>
+            <p>We follow semantic versioning: <code>MAJOR.MINOR.PATCH</code></p>
+
+            <div class="alert warning">
+                <strong>Breaking Changes</strong>
+                <p>Require a new major version (v1 → v2). Examples: removing endpoints, removing required fields, changing field types, renaming fields.</p>
+            </div>
+
+            <div class="alert success">
+                <strong>Non-Breaking Changes</strong>
+                <p>Can be made within the same version. Examples: adding new endpoints, adding optional fields, bug fixes.</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <!-- Footer will be loaded dynamically -->
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/scripts.js"></script>
+    <script>
+        // Initialize page
+        initPage('changelog.html');
+
+        // Load changelog configuration and data
+        async function loadChangelogs() {
+            const changelogConfig = await ConfigLoader.loadPage('changelog');
+            if (!changelogConfig) {
+                console.error('Failed to load changelog configuration');
+                return;
+            }
+
+            const tabsContainer = document.getElementById('changelog-tabs');
+            tabsContainer.innerHTML = '';
+
+            // Create tabs
+            for (const tab of changelogConfig.tabs) {
+                const button = document.createElement('button');
+                button.className = 'tab';
+                button.dataset.tab = `${tab.id}-content`;
+                button.style.setProperty('--tab-color', tab.color);
+                button.innerHTML = `${tab.icon} ${tab.title}`;
+                tabsContainer.appendChild(button);
+
+                // Load changelog data for this tab
+                const changelogData = await ConfigLoader.loadChangelog(tab.id);
+                const contentContainer = document.getElementById(`${tab.id}-content`);
+
+                if (changelogData) {
+                    contentContainer.innerHTML = renderChangelog(changelogData);
+                } else {
+                    contentContainer.innerHTML = '<div class="alert danger">Failed to load changelog data</div>';
+                }
+            }
+
+            // Initialize tab functionality
+            initTabs();
+        }
+
+        loadChangelogs();
+    </script>
+</body>
+</html>
