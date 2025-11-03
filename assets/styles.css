@@ -871,3 +871,52 @@ html {
     color: var(--text-primary);
     font-size: 0.875rem;
 }
+
+/* Code Example Tabs (smaller variant for endpoints) */
+.code-example-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+    background-color: #2d3748;
+    border-radius: 6px 6px 0 0;
+    padding: 0.5rem 0.5rem 0 0.5rem;
+}
+
+.code-example-tab {
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    border-radius: 4px 4px 0 0;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.code-example-tab:hover {
+    color: #d1d5db;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.code-example-tab.active {
+    color: #ffffff;
+    background-color: var(--dark-bg);
+}
+
+.code-example-content {
+    display: none;
+}
+
+.code-example-content.active {
+    display: block;
+}
+
+.code-examples-wrapper {
+    margin-bottom: 1rem;
+}
+
+.code-examples-wrapper .code-block {
+    border-radius: 0 0 6px 6px;
+    margin-bottom: 0;
+}

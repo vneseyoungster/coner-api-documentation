@@ -183,6 +183,46 @@ function initTabs() {
     }
 }
 
+// Code Example Tab Functionality (for endpoint examples)
+function initCodeExampleTabs() {
+    // Get all code example wrappers
+    const wrappers = document.querySelectorAll('.code-examples-wrapper');
+
+    wrappers.forEach(wrapper => {
+        const tabs = wrapper.querySelectorAll('.code-example-tab');
+        const contents = wrapper.querySelectorAll('.code-example-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetLang = tab.dataset.lang;
+
+                // Remove active class from all tabs and contents within this wrapper
+                tabs.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+
+                // Add active class to clicked tab and corresponding content
+                tab.classList.add('active');
+                wrapper.querySelector(`.code-example-content[data-lang="${targetLang}"]`).classList.add('active');
+            });
+        });
+
+        // Activate first tab by default
+        if (tabs.length > 0) {
+            tabs[0].click();
+        }
+    });
+}
+
+// Switch all code example tabs to a specific language
+function switchAllCodeTabs(language) {
+    document.querySelectorAll('.code-examples-wrapper').forEach(wrapper => {
+        const targetTab = wrapper.querySelector(`.code-example-tab[data-lang="${language}"]`);
+        if (targetTab) {
+            targetTab.click();
+        }
+    });
+}
+
 // Changelog Renderer
 function renderChangelog(data) {
     if (!data || !data.versions) return '';
@@ -517,6 +557,11 @@ async function initPage(currentPage) {
         initSmoothScroll();
         initScrollHighlight();
     }
+
+    // Initialize code example tabs if they exist
+    if (document.querySelectorAll('.code-examples-wrapper').length > 0) {
+        initCodeExampleTabs();
+    }
 }
 
 // Export functions for global use
@@ -526,6 +571,8 @@ window.buildHeader = buildHeader;
 window.buildFooter = buildFooter;
 window.copyCode = copyCode;
 window.initTabs = initTabs;
+window.initCodeExampleTabs = initCodeExampleTabs;
+window.switchAllCodeTabs = switchAllCodeTabs;
 window.renderChangelog = renderChangelog;
 window.initPage = initPage;
 window.buildSidebarNav = buildSidebarNav;
