@@ -577,6 +577,298 @@ print(response.json())</pre>
             </div>
         </section>
 
+        <!-- Development Endpoints -->
+        <section id="dev-endpoints" class="section">
+            <h2>Development Endpoints</h2>
+
+            <div class="alert danger">
+                <strong>⚠️ DEVELOPMENT ONLY:</strong> These endpoints are only available when <code>NODE_ENV=development</code>. They return 404 in production.
+            </div>
+
+            <p>All development endpoints are prefixed with <code>/dev/auth</code> and are designed for backend testing purposes only.</p>
+
+            <h3>Purpose</h3>
+            <p>The development token endpoints allow backend developers to obtain valid JWT access tokens without:</p>
+            <ul>
+                <li>Running the mobile app</li>
+                <li>Going through the complete OAuth flow</li>
+                <li>Manually extracting tokens from console logs</li>
+                <li>Setting up frontend environment</li>
+            </ul>
+
+            <h3>Security</h3>
+            <ul>
+                <li><strong>Environment Protection:</strong> Endpoints return 404 in production</li>
+                <li><strong>Service Role Access:</strong> Uses Supabase Admin API with service role key</li>
+                <li><strong>Auto-confirmation:</strong> Test users are created with pre-confirmed emails</li>
+                <li><strong>Test User Pattern:</strong> Default email pattern is <code>test@coner.dev</code></li>
+            </ul>
+
+            <!-- Generate Test Token -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method post">POST</span>
+                    <span class="endpoint-path">/dev/auth/token</span>
+                </div>
+                <p class="endpoint-description">Generate a valid JWT access token for API testing.</p>
+
+                <h4>Request Body (all fields optional)</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JSON</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>{
+  <span class="json-key">"email"</span>: <span class="json-string">"developer@test.com"</span>,
+  <span class="json-key">"password"</span>: <span class="json-string">"DevPassword123!"</span>,
+  <span class="json-key">"metadata"</span>: {
+    <span class="json-key">"full_name"</span>: <span class="json-string">"Backend Developer"</span>,
+    <span class="json-key">"avatar_url"</span>: <span class="json-string">"https://example.com/avatar.png"</span>
+  }
+}</pre>
+                </div>
+
+                <h4>Default Values</h4>
+                <p>If no request body is provided:</p>
+                <ul>
+                    <li><code>email</code>: <code>test@coner.dev</code></li>
+                    <li><code>password</code>: <code>TestPassword123!</code></li>
+                    <li><code>metadata.full_name</code>: <code>Test User</code></li>
+                </ul>
+
+                <h4>Request Examples</h4>
+                <div class="code-examples-wrapper">
+                    <div class="code-example-tabs">
+                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
+                        <button class="code-example-tab" data-lang="python">Python</button>
+                        <button class="code-example-tab" data-lang="curl">cURL</button>
+                    </div>
+
+                    <div class="code-example-content active" data-lang="javascript">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>JavaScript (Axios)</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>const axios = require('axios');
+
+// Default token
+const response = await axios.post('http://146.190.92.0:8080/dev/auth/token');
+console.log(response.data);</pre>
+                        </div>
+                    </div>
+
+                    <div class="code-example-content" data-lang="python">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Python (requests)</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>import requests
+
+# Default token
+response = requests.post('http://146.190.92.0:8080/dev/auth/token')
+print(response.json())</pre>
+                        </div>
+                    </div>
+
+                    <div class="code-example-content" data-lang="curl">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>cURL</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>curl -X POST http://146.190.92.0:8080/dev/auth/token</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Response (200 OK)</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JSON Response</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>{
+  <span class="json-key">"success"</span>: <span class="json-boolean">true</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"access_token"</span>: <span class="json-string">"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."</span>,
+    <span class="json-key">"refresh_token"</span>: <span class="json-string">"v1-abc123..."</span>,
+    <span class="json-key">"expires_in"</span>: <span class="json-number">3600</span>,
+    <span class="json-key">"expires_at"</span>: <span class="json-number">1732123456</span>,
+    <span class="json-key">"token_type"</span>: <span class="json-string">"bearer"</span>,
+    <span class="json-key">"user"</span>: {
+      <span class="json-key">"id"</span>: <span class="json-string">"550e8400-e29b-41d4-a716-446655440000"</span>,
+      <span class="json-key">"email"</span>: <span class="json-string">"test@coner.dev"</span>,
+      <span class="json-key">"user_metadata"</span>: {
+        <span class="json-key">"full_name"</span>: <span class="json-string">"Test User"</span>
+      }
+    }
+  },
+  <span class="json-key">"message"</span>: <span class="json-string">"Test token generated successfully"</span>
+}</pre>
+                </div>
+
+                <h4>Using the Token</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre># Get token
+TOKEN=$(curl -s -X POST http://146.190.92.0:8080/dev/auth/token | jq -r '.data.access_token')
+
+# Use in protected endpoint
+curl -X GET http://146.190.92.0:8080/auth/me \
+  -H "Authorization: Bearer $TOKEN"</pre>
+                </div>
+            </div>
+
+            <!-- Generate Multiple Test Tokens -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method post">POST</span>
+                    <span class="endpoint-path">/dev/auth/tokens/batch</span>
+                </div>
+                <p class="endpoint-description">Generate multiple test tokens in a single request (batch creation).</p>
+
+                <h4>Request Body</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JSON</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>{
+  <span class="json-key">"count"</span>: <span class="json-number">5</span>
+}</pre>
+                </div>
+
+                <h4>Validation Rules</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Type</th>
+                            <th>Required</th>
+                            <th>Validation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>count</code></td>
+                            <td>number</td>
+                            <td><span class="badge optional">Optional</span></td>
+                            <td>Default: 5, Maximum: 20</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Request Example</h4>
+                <div class="code-examples-wrapper">
+                    <div class="code-example-tabs">
+                        <button class="code-example-tab active" data-lang="curl">cURL</button>
+                    </div>
+
+                    <div class="code-example-content active" data-lang="curl">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>cURL</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>curl -X POST http://146.190.92.0:8080/dev/auth/tokens/batch \
+  -H "Content-Type: application/json" \
+  -d '{"count": 3}'</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Response (200 OK)</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JSON Response</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>{
+  <span class="json-key">"success"</span>: <span class="json-boolean">true</span>,
+  <span class="json-key">"data"</span>: [
+    {
+      <span class="json-key">"access_token"</span>: <span class="json-string">"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."</span>,
+      <span class="json-key">"user"</span>: {
+        <span class="json-key">"email"</span>: <span class="json-string">"test1@coner.dev"</span>
+      }
+    },
+    {
+      <span class="json-key">"access_token"</span>: <span class="json-string">"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."</span>,
+      <span class="json-key">"user"</span>: {
+        <span class="json-key">"email"</span>: <span class="json-string">"test2@coner.dev"</span>
+      }
+    }
+  ],
+  <span class="json-key">"message"</span>: <span class="json-string">"Generated 2 test tokens"</span>
+}</pre>
+                </div>
+            </div>
+
+            <!-- Delete Test User -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method delete">DELETE</span>
+                    <span class="endpoint-path">/dev/auth/user/:userId</span>
+                </div>
+                <p class="endpoint-description">Delete a test user for cleanup purposes.</p>
+
+                <h4>Path Parameters</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>userId</code></td>
+                            <td>uuid</td>
+                            <td>The Supabase user ID to delete</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Request Example</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>cURL</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>curl -X DELETE http://146.190.92.0:8080/dev/auth/user/550e8400-e29b-41d4-a716-446655440000</pre>
+                </div>
+
+                <h4>Response (200 OK)</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JSON Response</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>{
+  <span class="json-key">"success"</span>: <span class="json-boolean">true</span>,
+  <span class="json-key">"message"</span>: <span class="json-string">"Test user deleted successfully"</span>
+}</pre>
+                </div>
+            </div>
+
+            <h3>Development Workflow</h3>
+            <div class="alert info">
+                <strong>Typical Usage Pattern:</strong>
+                <ol style="margin: 0.5rem 0 0 1.5rem;">
+                    <li>Start development server: <code>cd src && npm run dev</code></li>
+                    <li>Generate test token: <code>POST /dev/auth/token</code></li>
+                    <li>Use token to test protected endpoints</li>
+                    <li>Clean up test users when done (optional)</li>
+                </ol>
+            </div>
+        </section>
+
         <!-- Profile Endpoints -->
         <section id="profile-endpoints" class="section">
             <h2>User Profile Endpoints</h2>

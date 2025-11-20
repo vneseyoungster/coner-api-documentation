@@ -1,6 +1,5 @@
 # Coner Backend API Reference
 
-**Version:** 0.6.0-dev
 **Base URL:** `http://localhost:8080` (development)
 **Authentication:** Bearer JWT tokens issued by Supabase Auth
 
@@ -9,19 +8,16 @@
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [API Design Rules](#api-design-rules)
-   - [Naming Conventions](#naming-conventions)
-   - [Versioning](#versioning)
-   - [HTTP Response Codes](#http-response-codes)
-3. [Authentication](#authentication)
-4. [API Endpoints](#api-endpoints)
+2. [Authentication](#authentication)
+3. [API Endpoints](#api-endpoints)
    - [Health Check](#health-check)
    - [Authentication Endpoints](#authentication-endpoints)
+   - [Development Endpoints](#development-endpoints)
    - [User Profile Endpoints](#user-profile-endpoints)
-5. [Data Models](#data-models)
-6. [Error Handling](#error-handling)
-7. [Rate Limiting](#rate-limiting)
-8. [Examples](#examples)
+4. [Data Models](#data-models)
+5. [Error Handling](#error-handling)
+6. [Rate Limiting](#rate-limiting)
+7. [Examples](#examples)
 
 ---
 
@@ -44,200 +40,6 @@ The Coner Backend API is a RESTful service built with Express.js and TypeScript,
 - **Database**: PostgreSQL with connection pooling
 - **Caching**: Redis for session management and caching
 - **Events**: In-memory event bus for domain events
-
----
-
-## API Design Rules
-
-This section defines the design rules and conventions for the Coner Backend API to ensure consistency, maintainability, and ease of use.
-
-### Naming Conventions
-
-#### Snake Case (snake_case)
-
-**All API field names MUST use snake_case**
-
-✅ **Correct:**
-```json
-{
-  "user_id": "123",
-  "display_name": "Alice Smith",
-  "avatar_url": "https://example.com/avatar.png",
-  "created_at": "2025-01-15T10:30:00Z",
-  "is_deleted": false
-}
-```
-
-❌ **Incorrect:**
-```json
-{
-  "userId": "123",
-  "DisplayName": "Alice Smith",
-  "avatarURL": "https://example.com/avatar.png"
-}
-```
-
-#### URL Structure
-
-**Endpoints:**
-- Use lowercase letters
-- Use hyphens for multi-word resources (if needed)
-- Use plural nouns for collections
-- Maximum 3 levels of nesting
-
-✅ **Correct:**
-```
-GET  /users
-GET  /users/{id}
-GET  /users/me/profile
-POST /auth/logout-all
-```
-
-❌ **Incorrect:**
-```
-GET  /user
-GET  /getUsers
-GET  /users/{id}/profile/{profile_id}/settings/{setting_id}
-```
-
----
-
-### Versioning
-
-#### Version Format
-
-**URL-based versioning using `/v{major}` prefix**
-
-```
-https://api.coner.app/v1/users
-https://api.coner.app/v1/auth/signin
-```
-
-#### Version Lifecycle
-
-- **Current Version:** v1
-- **Version Increment Rules:**
-  - Major version (v1 → v2): Breaking changes
-  - No minor versions in URL (handle via backward compatibility)
-
-#### Breaking Changes
-
-Changes that require a new major version:
-- Removing endpoints
-- Removing required fields
-- Changing field types
-- Changing authentication mechanism
-- Renaming fields
-
-#### Non-Breaking Changes
-
-Can be made within the same version:
-- Adding new endpoints
-- Adding optional fields
-- Adding new enum values (at the end)
-- Bug fixes
-
-#### Deprecation Policy
-
-1. Announce deprecation in API documentation
-2. Maintain old version for minimum 6 months
-3. Return deprecation warnings in response headers:
-   ```
-   Deprecation: true
-   Sunset: Sat, 31 Dec 2025 23:59:59 GMT
-   Link: <https://docs.coner.app/migration>; rel="sunset"
-   ```
-
----
-
-### HTTP Response Codes
-
-#### Success Codes (2xx)
-
-| Code | Status | Usage |
-|------|--------|-------|
-| 200 | OK | Successful GET, PUT, PATCH requests |
-| 201 | Created | Successful POST request that creates a resource |
-| 204 | No Content | Successful DELETE request or POST with no response body |
-
-**Examples:**
-```
-GET  /users/me        → 200 OK
-POST /auth/signup     → 201 Created
-POST /auth/logout-all → 204 No Content
-```
-
-#### Client Error Codes (4xx)
-
-| Code | Status | Usage |
-|------|--------|-------|
-| 400 | Bad Request | Validation errors, malformed request body |
-| 401 | Unauthorized | Missing or invalid authentication token |
-| 403 | Forbidden | Valid token but insufficient permissions |
-| 404 | Not Found | Resource does not exist |
-| 409 | Conflict | Resource conflict (e.g., email already exists) |
-| 422 | Unprocessable Entity | Semantic validation errors |
-| 429 | Too Many Requests | Rate limit exceeded |
-
-**Example Error Response (400):**
-```json
-{
-  "error": "ValidationError",
-  "details": {
-    "email": ["Must be a valid email address"],
-    "password": ["Must be at least 8 characters long"]
-  }
-}
-```
-
-**Example Error Response (401):**
-```json
-{
-  "error": "Unauthorized",
-  "message": "Invalid or expired token"
-}
-```
-
-#### Server Error Codes (5xx)
-
-| Code | Status | Usage |
-|------|--------|-------|
-| 500 | Internal Server Error | Unexpected server error |
-| 502 | Bad Gateway | Upstream service failure |
-| 503 | Service Unavailable | Temporary server maintenance |
-| 504 | Gateway Timeout | Upstream service timeout |
-
-**Example Error Response (500):**
-```json
-{
-  "error": "Internal server error",
-  "message": "An unexpected error occurred"
-}
-```
-
-#### Response Code Selection Guide
-
-```
-Is the request authenticated and authorized?
-├─ No  → 401 Unauthorized or 403 Forbidden
-└─ Yes
-   │
-   Is the request body valid JSON and well-formed?
-   ├─ No  → 400 Bad Request
-   └─ Yes
-      │
-      Does the resource exist (for GET, PUT, PATCH, DELETE)?
-      ├─ No  → 404 Not Found
-      └─ Yes
-         │
-         Is the data semantically valid?
-         ├─ No  → 400 Bad Request or 422 Unprocessable Entity
-         └─ Yes
-            │
-            Did the operation succeed?
-            ├─ Yes → 200 OK / 201 Created / 204 No Content
-            └─ No  → 500 Internal Server Error
-```
 
 ---
 
@@ -514,6 +316,277 @@ Returns HTML page with instructions to copy `access_token` from browser address 
 
 ---
 
+### Development Endpoints
+
+**⚠️ DEVELOPMENT ONLY** - These endpoints are only available when `NODE_ENV=development`.
+
+All development endpoints are prefixed with `/dev/auth` and are designed for backend testing purposes only.
+
+#### Purpose
+
+The development token endpoints allow backend developers to obtain valid JWT access tokens without:
+- Running the mobile app
+- Going through the complete OAuth flow
+- Manually extracting tokens from console logs
+- Setting up frontend environment
+
+#### Security
+
+- **Environment Protection**: Endpoints return 404 in production
+- **Service Role Access**: Uses Supabase Admin API with service role key
+- **Auto-confirmation**: Test users are created with pre-confirmed emails
+- **Test User Pattern**: Default email pattern is `test@coner.dev`
+
+---
+
+#### 1. Generate Test Token
+
+Generate a valid JWT access token for API testing.
+
+```http
+POST /dev/auth/token
+```
+
+**Request Body (all fields optional)**
+
+```json
+{
+  "email": "developer@test.com",
+  "password": "DevPassword123!",
+  "metadata": {
+    "full_name": "Backend Developer",
+    "avatar_url": "https://example.com/avatar.png"
+  }
+}
+```
+
+**Default Values**
+
+If no request body is provided, the following defaults are used:
+- `email`: `test@coner.dev`
+- `password`: `TestPassword123!`
+- `metadata.full_name`: `Test User`
+
+**Behavior**
+
+1. Attempts to sign in with provided/default credentials
+2. If user doesn't exist, creates them automatically with `email_confirm: true`
+3. Returns valid Supabase JWT tokens
+
+**Response (200 OK)**
+
+```json
+{
+  "success": true,
+  "data": {
+    "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refresh_token": "v1-abc123...",
+    "expires_in": 3600,
+    "expires_at": 1732123456,
+    "token_type": "bearer",
+    "user": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "email": "test@coner.dev",
+      "user_metadata": {
+        "full_name": "Test User"
+      }
+    }
+  },
+  "message": "Test token generated successfully"
+}
+```
+
+**Error Responses**
+
+- `500 Internal Server Error`: Failed to create/sign in test user
+
+**Example - Default Token**
+
+```bash
+curl -X POST http://localhost:8080/dev/auth/token
+```
+
+**Example - Custom Token**
+
+```bash
+curl -X POST http://localhost:8080/dev/auth/token \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "developer@test.com",
+    "password": "DevPassword123!",
+    "metadata": {
+      "full_name": "Backend Developer"
+    }
+  }'
+```
+
+**Example - Using Token**
+
+```bash
+# Get token
+TOKEN=$(curl -s -X POST http://localhost:8080/dev/auth/token | jq -r '.data.access_token')
+
+# Use in protected endpoint
+curl -X GET http://localhost:8080/auth/me \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+---
+
+#### 2. Generate Multiple Test Tokens
+
+Generate multiple test tokens in a single request (batch creation).
+
+```http
+POST /dev/auth/tokens/batch
+```
+
+**Request Body**
+
+```json
+{
+  "count": 5
+}
+```
+
+**Validation Rules**
+
+| Field | Type | Required | Validation |
+|-------|------|----------|------------|
+| `count` | number | No | Default: 5, Maximum: 20 |
+
+**Behavior**
+
+Creates test users with the pattern `test1@coner.dev`, `test2@coner.dev`, etc., and returns tokens for each.
+
+**Response (200 OK)**
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "refresh_token": "v1-abc123...",
+      "expires_in": 3600,
+      "expires_at": 1732123456,
+      "token_type": "bearer",
+      "user": {
+        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "email": "test1@coner.dev",
+        "user_metadata": {
+          "full_name": "Test User 1"
+        }
+      }
+    },
+    {
+      "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "refresh_token": "v1-def456...",
+      "expires_in": 3600,
+      "expires_at": 1732123456,
+      "token_type": "bearer",
+      "user": {
+        "id": "660e8400-e29b-41d4-a716-446655440001",
+        "email": "test2@coner.dev",
+        "user_metadata": {
+          "full_name": "Test User 2"
+        }
+      }
+    }
+    // ... up to 20 tokens
+  ],
+  "message": "Generated 2 test tokens"
+}
+```
+
+**Error Responses**
+
+- `400 Bad Request`: Count exceeds maximum of 20
+- `500 Internal Server Error`: Failed to create test users
+
+**Example**
+
+```bash
+curl -X POST http://localhost:8080/dev/auth/tokens/batch \
+  -H "Content-Type: application/json" \
+  -d '{"count": 3}'
+```
+
+---
+
+#### 3. Delete Test User
+
+Delete a test user for cleanup purposes.
+
+```http
+DELETE /dev/auth/user/:userId
+```
+
+**Path Parameters**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `userId` | uuid | The Supabase user ID to delete |
+
+**Response (200 OK)**
+
+```json
+{
+  "success": true,
+  "message": "Test user deleted successfully"
+}
+```
+
+**Error Responses**
+
+- `500 Internal Server Error`: Failed to delete test user
+
+**Example**
+
+```bash
+curl -X DELETE http://localhost:8080/dev/auth/user/550e8400-e29b-41d4-a716-446655440000
+```
+
+---
+
+#### Development Workflow
+
+**Typical Usage Pattern:**
+
+1. Start development server: `cd src && npm run dev`
+2. Generate test token: `POST /dev/auth/token`
+3. Use token to test protected endpoints
+4. Clean up test users when done (optional)
+
+**Postman Setup:**
+
+```javascript
+// In Postman Tests tab for /dev/auth/token request
+const response = pm.response.json();
+pm.environment.set("access_token", response.data.access_token);
+pm.environment.set("user_id", response.data.user.id);
+```
+
+Then use `{{access_token}}` in Authorization headers for other requests.
+
+**CI/CD Integration:**
+
+```yaml
+# Example GitHub Actions workflow
+- name: Get test token
+  run: |
+    TOKEN=$(curl -s -X POST http://localhost:8080/dev/auth/token | jq -r '.data.access_token')
+    echo "TOKEN=$TOKEN" >> $GITHUB_ENV
+
+- name: Run API tests
+  run: |
+    curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/api/users/me
+```
+
+**See Also:** `docs/DEV_TOKEN_ENDPOINT.md` for complete implementation guide.
+
+---
+
 ### User Profile Endpoints
 
 All user profile endpoints are prefixed with `/users` and require authentication.
@@ -742,93 +815,6 @@ Returns the complete updated profile object (same format as GET /users/profile).
 
 ---
 
-#### 6. Check Profile Completion Status
-
-Check whether the user has completed their profile setup.
-
-```http
-GET /users/profile-updated
-Authorization: Bearer <access_token>
-```
-
-**Response (200 OK)**
-
-```json
-{
-  "isUpdated": true
-}
-```
-
-**Field Descriptions**
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `isUpdated` | boolean | `true` if user has completed profile setup, `false` otherwise |
-
-**Use Cases**
-
-- Check if user needs to complete onboarding flow
-- Determine whether to show profile setup wizard
-- Track onboarding completion for analytics
-
-**Error Responses**
-
-- `401 Unauthorized`: Missing or invalid JWT token
-- `404 Not Found`: Profile not found
-
----
-
-#### 7. Set Profile Completion Status
-
-Mark the user's profile as completed or incomplete.
-
-```http
-POST /users/profile-updated
-Authorization: Bearer <access_token>
-```
-
-**Request Body**
-
-```json
-{
-  "status": true
-}
-```
-
-**Validation Rules**
-
-| Field | Type | Required | Validation |
-|-------|------|----------|------------|
-| `status` | boolean | Yes | Must be a boolean value |
-
-**Use Cases**
-
-- Mark profile as completed after first-time setup
-- Reset profile completion status (e.g., when new required fields are added)
-- Track onboarding progress
-
-**Response (200 OK)**
-
-Empty response body on success.
-
-**Error Responses**
-
-- `401 Unauthorized`: Missing or invalid JWT token
-- `400 Bad Request`: Validation error (status is not a boolean)
-- `404 Not Found`: Profile not found
-
-**Example Usage**
-
-```bash
-# Mark profile as completed
-curl -X POST http://localhost:8080/users/profile-updated \
-  -H "Authorization: Bearer <access_token>" \
-  -H "Content-Type: application/json" \
-  -d '{"status": true}'
-```
-
----
-
 ## Data Models
 
 ### User Profile Schema
@@ -857,7 +843,6 @@ CREATE TABLE user_profiles (
   address           varchar(500),
   school            varchar(255),
   major             varchar(255),
-  has_updated_profile boolean NOT NULL DEFAULT false,
   logout_at         timestamptz,
   created_at        timestamptz NOT NULL DEFAULT now(),
   updated_at        timestamptz NOT NULL DEFAULT now(),
@@ -1199,5 +1184,5 @@ For issues or questions:
 ---
 
 **Maintained by**: Coner Development Team
-**Last Updated**: 2025-11-03
-**API Version**: 0.6.0-dev
+**Last Updated**: 2025-11-20
+**API Version**: 0.5.0 (unreleased)

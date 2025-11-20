@@ -17,6 +17,12 @@
       "description": "User authentication and session management"
     },
     {
+      "id": "dev-endpoints",
+      "title": "Development Endpoints",
+      "icon": "🛠️",
+      "description": "Development-only token generation endpoints"
+    },
+    {
       "id": "profile-endpoints",
       "title": "User Profile",
       "icon": "👤",
