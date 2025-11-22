@@ -1275,6 +1275,484 @@ print(response.json())</pre>
             </div>
         </section>
 
+        <!-- User Answer Endpoints -->
+        <section id="user-answer-endpoints" class="section">
+            <h2>User Answer Endpoints</h2>
+            <p>All user answer endpoints are prefixed with <code>/answers</code> and require authentication.</p>
+
+            <!-- Get My Answer -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-path">/answers</span>
+                </div>
+                <p class="endpoint-description">Retrieve the authenticated user's answer.</p>
+
+                <h4>Request Example</h4>
+                <div class="code-examples-wrapper">
+                    <div class="code-example-tabs">
+                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
+                        <button class="code-example-tab" data-lang="python">Python</button>
+                        <button class="code-example-tab" data-lang="curl">cURL</button>
+                    </div>
+
+                    <div class="code-example-content active" data-lang="javascript">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>JavaScript (Axios)</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>const axios = require('axios');
+
+const response = await axios.get('http://146.190.92.0:8080/answers', {
+  headers: {
+    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+  }
+});
+console.log(response.data);</pre>
+                        </div>
+                    </div>
+
+                    <div class="code-example-content" data-lang="python">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Python (requests)</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>import requests
+
+headers = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}
+response = requests.get('http://146.190.92.0:8080/answers', headers=headers)
+print(response.json())</pre>
+                        </div>
+                    </div>
+
+                    <div class="code-example-content" data-lang="curl">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>cURL</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>curl -X GET http://146.190.92.0:8080/answers \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Response (200 OK)</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JSON Response</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>{
+  <span class="json-key">"message"</span>: <span class="json-string">"Your answer fetched"</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"user_id"</span>: <span class="json-string">"550e8400-e29b-41d4-a716-446655440000"</span>,
+    <span class="json-key">"dating_style"</span>: <span class="json-string">"loud"</span>,
+    <span class="json-key">"match_preference"</span>: <span class="json-string">"same field"</span>,
+    <span class="json-key">"user_field"</span>: <span class="json-string">"Computer science"</span>,
+    <span class="json-key">"purpose"</span>: <span class="json-string">"studying"</span>,
+    <span class="json-key">"created_at"</span>: <span class="json-string">"2025-01-15T10:30:00.000Z"</span>,
+    <span class="json-key">"updated_at"</span>: <span class="json-string">"2025-01-15T10:30:00.000Z"</span>
+  }
+}</pre>
+                </div>
+            </div>
+
+            <!-- Create My Answer -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method post">POST</span>
+                    <span class="endpoint-path">/answers</span>
+                </div>
+                <p class="endpoint-description">Submit a new answer for the authenticated user. Each user can only submit once.</p>
+
+                <h4>Request Example</h4>
+                <div class="code-examples-wrapper">
+                    <div class="code-example-tabs">
+                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
+                        <button class="code-example-tab" data-lang="python">Python</button>
+                        <button class="code-example-tab" data-lang="curl">cURL</button>
+                    </div>
+
+                    <div class="code-example-content active" data-lang="javascript">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>JavaScript (Axios)</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>const axios = require('axios');
+
+const response = await axios.post('http://146.190.92.0:8080/answers', {
+  dating_style: 'loud',
+  match_preference: 'same field',
+  user_field: 'Computer science',
+  purpose: 'studying'
+}, {
+  headers: {
+    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+  }
+});
+console.log(response.data);</pre>
+                        </div>
+                    </div>
+
+                    <div class="code-example-content" data-lang="python">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Python (requests)</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>import requests
+
+headers = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}
+data = {
+    'dating_style': 'loud',
+    'match_preference': 'same field',
+    'user_field': 'Computer science',
+    'purpose': 'studying'
+}
+response = requests.post('http://146.190.92.0:8080/answers', json=data, headers=headers)
+print(response.json())</pre>
+                        </div>
+                    </div>
+
+                    <div class="code-example-content" data-lang="curl">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>cURL</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>curl -X POST http://146.190.92.0:8080/answers \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "dating_style": "loud",
+    "match_preference": "same field",
+    "user_field": "Computer science",
+    "purpose": "studying"
+  }'</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Response (201 Created)</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JSON Response</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>{
+  <span class="json-key">"message"</span>: <span class="json-string">"Your answer created"</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"user_id"</span>: <span class="json-string">"550e8400-e29b-41d4-a716-446655440000"</span>,
+    <span class="json-key">"dating_style"</span>: <span class="json-string">"loud"</span>,
+    <span class="json-key">"match_preference"</span>: <span class="json-string">"same field"</span>,
+    <span class="json-key">"user_field"</span>: <span class="json-string">"Computer science"</span>,
+    <span class="json-key">"purpose"</span>: <span class="json-string">"studying"</span>,
+    <span class="json-key">"created_at"</span>: <span class="json-string">"2025-01-15T10:30:00.000Z"</span>,
+    <span class="json-key">"updated_at"</span>: <span class="json-string">"2025-01-15T10:30:00.000Z"</span>
+  }
+}</pre>
+                </div>
+            </div>
+
+            <!-- Update My Answer -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method put">PUT</span>
+                    <span class="endpoint-path">/answers</span>
+                </div>
+                <p class="endpoint-description">Update the authenticated user's existing answer. Supports partial updates.</p>
+
+                <h4>Request Example</h4>
+                <div class="code-examples-wrapper">
+                    <div class="code-example-tabs">
+                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
+                        <button class="code-example-tab" data-lang="python">Python</button>
+                        <button class="code-example-tab" data-lang="curl">cURL</button>
+                    </div>
+
+                    <div class="code-example-content active" data-lang="javascript">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>JavaScript (Axios)</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>const axios = require('axios');
+
+const response = await axios.put('http://146.190.92.0:8080/answers', {
+  dating_style: 'quiet',
+  purpose: 'working'
+}, {
+  headers: {
+    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+  }
+});
+console.log(response.data);</pre>
+                        </div>
+                    </div>
+
+                    <div class="code-example-content" data-lang="python">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Python (requests)</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>import requests
+
+headers = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}
+data = {
+    'dating_style': 'quiet',
+    'purpose': 'working'
+}
+response = requests.put('http://146.190.92.0:8080/answers', json=data, headers=headers)
+print(response.json())</pre>
+                        </div>
+                    </div>
+
+                    <div class="code-example-content" data-lang="curl">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>cURL</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>curl -X PUT http://146.190.92.0:8080/answers \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "dating_style": "quiet",
+    "purpose": "working"
+  }'</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Response (200 OK)</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JSON Response</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>{
+  <span class="json-key">"message"</span>: <span class="json-string">"Your answer updated"</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"user_id"</span>: <span class="json-string">"550e8400-e29b-41d4-a716-446655440000"</span>,
+    <span class="json-key">"dating_style"</span>: <span class="json-string">"quiet"</span>,
+    <span class="json-key">"match_preference"</span>: <span class="json-string">"same field"</span>,
+    <span class="json-key">"user_field"</span>: <span class="json-string">"Computer science"</span>,
+    <span class="json-key">"purpose"</span>: <span class="json-string">"working"</span>,
+    <span class="json-key">"created_at"</span>: <span class="json-string">"2025-01-15T10:30:00.000Z"</span>,
+    <span class="json-key">"updated_at"</span>: <span class="json-string">"2025-01-15T14:45:00.000Z"</span>
+  }
+}</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Matching Queue Endpoints -->
+        <section id="matching-endpoints" class="section">
+            <h2>Matching Queue Endpoints</h2>
+            <p>Endpoints for joining the matching queue.</p>
+
+            <!-- Join Queue -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method post">POST</span>
+                    <span class="endpoint-path">/queue/join</span>
+                </div>
+                <p class="endpoint-description">Join the matching queue ("Find now" or "Match later").</p>
+
+                <h4>Request Example</h4>
+                <div class="code-examples-wrapper">
+                    <div class="code-example-tabs">
+                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
+                        <button class="code-example-tab" data-lang="python">Python</button>
+                        <button class="code-example-tab" data-lang="curl">cURL</button>
+                    </div>
+
+                    <div class="code-example-content active" data-lang="javascript">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>JavaScript (Axios)</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>const axios = require('axios');
+
+// "Find now" example
+const response = await axios.post('http://146.190.92.0:8080/queue/join', {
+  location: {
+    lat: 10.779783,
+    lng: 106.699018,
+    placeId: 'coffee-123'
+  }
+}, {
+  headers: {
+    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+  }
+});
+console.log(response.data);</pre>
+                        </div>
+                    </div>
+
+                    <div class="code-example-content" data-lang="python">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Python (requests)</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>import requests
+
+headers = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}
+# "Match later" example
+data = {
+    'location': {
+        'lat': 10.779783,
+        'lng': 106.699018,
+        'placeId': 'coffee-123'
+    },
+    'timeWindow': {
+        'start': '2025-11-14T14:00:00Z',
+        'end': '2025-11-14T16:00:00Z'
+    }
+}
+response = requests.post('http://146.190.92.0:8080/queue/join', json=data, headers=headers)
+print(response.json())</pre>
+                        </div>
+                    </div>
+
+                    <div class="code-example-content" data-lang="curl">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>cURL</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>curl -X POST http://146.190.92.0:8080/queue/join \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "location": {
+      "lat": 10.779783,
+      "lng": 106.699018,
+      "placeId": "coffee-123"
+    }
+  }'</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Response (201 Created)</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JSON Response</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>{
+  <span class="json-key">"success"</span>: <span class="json-boolean">true</span>,
+  <span class="json-key">"queueEntry"</span>: {
+    <span class="json-key">"queueId"</span>: <span class="json-string">"eab71b1c-cb88-4736-9909-ef99e9abb61d"</span>,
+    <span class="json-key">"position"</span>: <span class="json-number">2</span>,
+    <span class="json-key">"joinedAt"</span>: <span class="json-string">"2025-11-14T12:09:14.481Z"</span>,
+    <span class="json-key">"timeWindow"</span>: {
+      <span class="json-key">"start"</span>: <span class="json-string">"2025-11-14T12:14:14.481Z"</span>,
+      <span class="json-key">"end"</span>: <span class="json-string">"2025-11-14T18:09:14.481Z"</span>
+    }
+  }
+}</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Question Endpoints -->
+        <section id="question-endpoints" class="section">
+            <h2>Question Endpoints</h2>
+            <p>Endpoints for retrieving matching questions.</p>
+
+            <!-- Get All Questions -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-path">/questions</span>
+                </div>
+                <p class="endpoint-description">Retrieve all active matching questions in display order.</p>
+
+                <h4>Request Example</h4>
+                <div class="code-examples-wrapper">
+                    <div class="code-example-tabs">
+                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
+                        <button class="code-example-tab" data-lang="python">Python</button>
+                        <button class="code-example-tab" data-lang="curl">cURL</button>
+                    </div>
+
+                    <div class="code-example-content active" data-lang="javascript">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>JavaScript (Axios)</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>const axios = require('axios');
+
+const response = await axios.get('http://146.190.92.0:8080/questions', {
+  headers: {
+    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+  }
+});
+console.log(response.data);</pre>
+                        </div>
+                    </div>
+
+                    <div class="code-example-content" data-lang="python">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Python (requests)</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>import requests
+
+headers = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}
+response = requests.get('http://146.190.92.0:8080/questions', headers=headers)
+print(response.json())</pre>
+                        </div>
+                    </div>
+
+                    <div class="code-example-content" data-lang="curl">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>cURL</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>curl -X GET http://146.190.92.0:8080/questions \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Response (200 OK)</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>JSON Response</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>{
+  <span class="json-key">"message"</span>: <span class="json-string">"Get questions successfully"</span>,
+  <span class="json-key">"data"</span>: [
+    {
+      <span class="json-key">"id"</span>: <span class="json-string">"550e8400-e29b-41d4-a716-446655440000"</span>,
+      <span class="json-key">"question_text"</span>: <span class="json-string">"What are your interests?"</span>,
+      <span class="json-key">"options"</span>: [
+        { <span class="json-key">"value"</span>: <span class="json-string">"sports"</span>, <span class="json-key">"label"</span>: <span class="json-string">"Sports"</span> },
+        { <span class="json-key">"value"</span>: <span class="json-string">"music"</span>, <span class="json-key">"label"</span>: <span class="json-string">"Music"</span> },
+        { <span class="json-key">"value"</span>: <span class="json-string">"travel"</span>, <span class="json-key">"label"</span>: <span class="json-string">"Travel"</span> }
+      ],
+      <span class="json-key">"display_order"</span>: <span class="json-number">1</span>
+    }
+  ]
+}</pre>
+                </div>
+            </div>
+        </section>
+
         <!-- Error Handling -->
         <section id="errors" class="section">
             <h2>Error Handling</h2>
