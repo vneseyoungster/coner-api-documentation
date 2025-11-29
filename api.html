@@ -40,7 +40,7 @@
             <!-- Breadcrumb Navigation -->
             <nav class="breadcrumb">
                 <a href="index.html">Documentation</a>
-                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-separator">></span>
                 <span class="breadcrumb-current">API Reference</span>
             </nav>
 
@@ -50,1812 +50,37 @@
                 <div class="page-actions">
                     <button class="copy-page-btn" onclick="copyPageUrl()">
                         <span>Copy page</span>
-                        <span>▼</span>
+                        <span>&#9660;</span>
                     </button>
                 </div>
             </div>
 
             <!-- Info Banner -->
             <div class="info-banner">
-                <span class="info-banner-icon">ℹ️</span>
-                <div class="info-banner-content">
-                    <p>This is the complete API reference for the Coner Backend. All endpoints require proper authentication unless otherwise specified.</p>
+                <span class="info-banner-icon">i</span>
+                <div class="info-banner-content" id="info-banner-content">
+                    <p>Loading...</p>
                 </div>
             </div>
 
             <!-- Public Endpoint Banner -->
-            <div class="alert info">
-                <strong>🌐 Public Development Endpoint:</strong> The API is accessible at <code>http://146.190.92.0:8080</code>. All code examples below use this endpoint. You can use this for testing and development purposes.
+            <div class="alert info" id="public-endpoint-banner">
+                Loading...
             </div>
 
-            <div class="container">
-        <!-- Health Check -->
-        <section id="health" class="section">
-            <h2>Health Check</h2>
-
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method get">GET</span>
-                    <span class="endpoint-path">/health</span>
-                </div>
-                <p class="endpoint-description">Checks the health status of the API server, database, and Redis.</p>
-
-                <h4>Request Example</h4>
-                <div class="code-examples-wrapper">
-                    <div class="code-example-tabs">
-                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
-                        <button class="code-example-tab" data-lang="python">Python</button>
-                        <button class="code-example-tab" data-lang="curl">cURL</button>
-                    </div>
-
-                    <div class="code-example-content active" data-lang="javascript">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript (Axios)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>const axios = require('axios');
-
-const response = await axios.get('http://146.190.92.0:8080/health');
-console.log(response.data);</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="python">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Python (requests)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>import requests
-
-response = requests.get('http://146.190.92.0:8080/health')
-print(response.json())</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="curl">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>cURL</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>curl -X GET http://146.190.92.0:8080/health</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <h4>Response (200 OK)</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON Response</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"status"</span>: <span class="json-string">"ok"</span>,
-  <span class="json-key">"db"</span>: <span class="json-boolean">true</span>,
-  <span class="json-key">"redis"</span>: <span class="json-string">"ok"</span>
-}</pre>
-                </div>
-
-                <h4>Response (500 Internal Server Error)</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON Response</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"status"</span>: <span class="json-string">"error"</span>,
-  <span class="json-key">"error"</span>: <span class="json-string">"Connection refused"</span>
-}</pre>
-                </div>
-            </div>
-        </section>
-
-        <!-- Authentication Endpoints -->
-        <section id="auth-endpoints" class="section">
-            <h2>Authentication Endpoints</h2>
-            <p>All authentication endpoints are prefixed with <code>/auth</code>.</p>
-
-            <!-- Sign Up -->
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method post">POST</span>
-                    <span class="endpoint-path">/auth/signup</span>
-                </div>
-                <p class="endpoint-description">Create a new user account.</p>
-
-                <h4>Request Example</h4>
-                <div class="code-examples-wrapper">
-                    <div class="code-example-tabs">
-                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
-                        <button class="code-example-tab" data-lang="python">Python</button>
-                        <button class="code-example-tab" data-lang="curl">cURL</button>
-                    </div>
-
-                    <div class="code-example-content active" data-lang="javascript">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript (Axios)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>const axios = require('axios');
-
-const response = await axios.post('http://146.190.92.0:8080/auth/signup', {
-  email: 'user@example.com',
-  password: 'securePassword123',
-  displayName: 'Alice Smith'
-});
-console.log(response.data);</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="python">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Python (requests)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>import requests
-
-response = requests.post('http://146.190.92.0:8080/auth/signup', json={
-    'email': 'user@example.com',
-    'password': 'securePassword123',
-    'displayName': 'Alice Smith'
-})
-print(response.json())</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="curl">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>cURL</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>curl -X POST http://146.190.92.0:8080/auth/signup \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "user@example.com",
-    "password": "securePassword123",
-    "displayName": "Alice Smith"
-  }'</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <h4>Validation Rules</h4>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Field</th>
-                            <th>Type</th>
-                            <th>Required</th>
-                            <th>Validation</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><code>email</code></td>
-                            <td>string</td>
-                            <td><span class="badge required">Required</span></td>
-                            <td>Valid email format</td>
-                        </tr>
-                        <tr>
-                            <td><code>password</code></td>
-                            <td>string</td>
-                            <td><span class="badge required">Required</span></td>
-                            <td>Minimum 8 characters</td>
-                        </tr>
-                        <tr>
-                            <td><code>displayName</code></td>
-                            <td>string</td>
-                            <td><span class="badge optional">Optional</span></td>
-                            <td>1-100 characters if provided</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <h4>Response (201 Created)</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON Response</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"userId"</span>: <span class="json-string">"550e8400-e29b-41d4-a716-446655440000"</span>
-}</pre>
-                </div>
-
-                <h4>Error Responses</h4>
-                <ul>
-                    <li><code>400 Bad Request</code>: Validation error or email already exists</li>
-                    <li><code>500 Internal Server Error</code>: Server error during account creation</li>
-                </ul>
+            <!-- Language Switcher -->
+            <div class="language-switcher">
+                <span>Code Examples:</span>
+                <button class="lang-btn active" data-lang="javascript" onclick="switchAllCodeTabs('javascript')">JavaScript</button>
+                <button class="lang-btn" data-lang="python" onclick="switchAllCodeTabs('python')">Python</button>
+                <button class="lang-btn" data-lang="curl" onclick="switchAllCodeTabs('curl')">cURL</button>
             </div>
 
-            <!-- Sign In -->
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method post">POST</span>
-                    <span class="endpoint-path">/auth/signin</span>
+            <div class="container" id="api-content">
+                <!-- API content will be loaded dynamically -->
+                <div class="loading-indicator">
+                    <p>Loading API documentation...</p>
                 </div>
-                <p class="endpoint-description">Authenticate an existing user.</p>
-
-                <h4>Request Example</h4>
-                <div class="code-examples-wrapper">
-                    <div class="code-example-tabs">
-                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
-                        <button class="code-example-tab" data-lang="python">Python</button>
-                        <button class="code-example-tab" data-lang="curl">cURL</button>
-                    </div>
-
-                    <div class="code-example-content active" data-lang="javascript">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript (Axios)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>const axios = require('axios');
-
-const response = await axios.post('http://146.190.92.0:8080/auth/signin', {
-  email: 'user@example.com',
-  password: 'securePassword123'
-});
-console.log(response.data);</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="python">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Python (requests)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>import requests
-
-response = requests.post('http://146.190.92.0:8080/auth/signin', json={
-    'email': 'user@example.com',
-    'password': 'securePassword123'
-})
-print(response.json())</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="curl">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>cURL</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>curl -X POST http://146.190.92.0:8080/auth/signin \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "user@example.com",
-    "password": "securePassword123"
-  }'</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <h4>Response (200 OK)</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON Response</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"access_token"</span>: <span class="json-string">"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."</span>,
-  <span class="json-key">"refresh_token"</span>: <span class="json-string">"v1.MRjWyLHe1KIrqT..."</span>,
-  <span class="json-key">"expires_in"</span>: <span class="json-number">3600</span>
-}</pre>
-                </div>
-            </div>
-
-            <!-- Get Current User -->
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method get">GET</span>
-                    <span class="endpoint-path">/auth/me</span>
-                </div>
-                <p class="endpoint-description">Get information about the currently authenticated user.</p>
-
-                <div class="alert info">
-                    <strong>Authentication Required:</strong> This endpoint requires a valid JWT token in the Authorization header.
-                </div>
-
-                <h4>Request Example</h4>
-                <div class="code-examples-wrapper">
-                    <div class="code-example-tabs">
-                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
-                        <button class="code-example-tab" data-lang="python">Python</button>
-                        <button class="code-example-tab" data-lang="curl">cURL</button>
-                    </div>
-
-                    <div class="code-example-content active" data-lang="javascript">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript (Axios)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>const axios = require('axios');
-
-const response = await axios.get('http://146.190.92.0:8080/auth/me', {
-  headers: {
-    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
-  }
-});
-console.log(response.data);</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="python">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Python (requests)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>import requests
-
-headers = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}
-response = requests.get('http://146.190.92.0:8080/auth/me', headers=headers)
-print(response.json())</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="curl">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>cURL</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>curl -X GET http://146.190.92.0:8080/auth/me \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <h4>Response (200 OK)</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON Response</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"ok"</span>: <span class="json-boolean">true</span>,
-  <span class="json-key">"user"</span>: {
-    <span class="json-key">"id"</span>: <span class="json-string">"550e8400-e29b-41d4-a716-446655440000"</span>,
-    <span class="json-key">"email"</span>: <span class="json-string">"user@example.com"</span>
-  }
-}</pre>
-                </div>
-            </div>
-
-            <!-- Global Logout -->
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method post">POST</span>
-                    <span class="endpoint-path">/auth/logout-all</span>
-                </div>
-                <p class="endpoint-description">Invalidate all active sessions for the current user across all devices.</p>
-
-                <div class="alert warning">
-                    <strong>Important:</strong> This will immediately invalidate all tokens for this user, including the one used to make this request.
-                </div>
-
-                <h4>Request Example</h4>
-                <div class="code-examples-wrapper">
-                    <div class="code-example-tabs">
-                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
-                        <button class="code-example-tab" data-lang="python">Python</button>
-                        <button class="code-example-tab" data-lang="curl">cURL</button>
-                    </div>
-
-                    <div class="code-example-content active" data-lang="javascript">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript (Axios)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>const axios = require('axios');
-
-const response = await axios.post('http://146.190.92.0:8080/auth/logout-all', {}, {
-  headers: {
-    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
-  }
-});
-console.log(response.status); // 204</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="python">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Python (requests)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>import requests
-
-headers = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}
-response = requests.post('http://146.190.92.0:8080/auth/logout-all', headers=headers)
-print(response.status_code)  # 204</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="curl">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>cURL</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>curl -X POST http://146.190.92.0:8080/auth/logout-all \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <h4>How It Works</h4>
-                <ol>
-                    <li>Sets <code>logout_at = NOW()</code> in the database (immediate cutoff)</li>
-                    <li>Calls Supabase Admin API to revoke all refresh tokens</li>
-                    <li>Purges middleware cache for instant invalidation</li>
-                </ol>
-
-                <h4>Response (204 No Content)</h4>
-                <p>Empty response body on success.</p>
-            </div>
-
-            <!-- Bootstrap Profile -->
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method post">POST</span>
-                    <span class="endpoint-path">/auth/bootstrap</span>
-                </div>
-                <p class="endpoint-description">Explicitly create user profile (optional - normally done automatically).</p>
-
-                <h4>Request Example</h4>
-                <div class="code-examples-wrapper">
-                    <div class="code-example-tabs">
-                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
-                        <button class="code-example-tab" data-lang="python">Python</button>
-                        <button class="code-example-tab" data-lang="curl">cURL</button>
-                    </div>
-
-                    <div class="code-example-content active" data-lang="javascript">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript (Axios)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>const axios = require('axios');
-
-const response = await axios.post('http://146.190.92.0:8080/auth/bootstrap', {}, {
-  headers: {
-    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
-  }
-});
-console.log(response.data);</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="python">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Python (requests)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>import requests
-
-headers = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}
-response = requests.post('http://146.190.92.0:8080/auth/bootstrap', headers=headers)
-print(response.json())</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="curl">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>cURL</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>curl -X POST http://146.190.92.0:8080/auth/bootstrap \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <h4>Response (200 OK)</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON Response</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"ok"</span>: <span class="json-boolean">true</span>
-}</pre>
-                </div>
-            </div>
-        </section>
-
-        <!-- Development Endpoints -->
-        <section id="dev-endpoints" class="section">
-            <h2>Development Endpoints</h2>
-
-            <div class="alert danger">
-                <strong>⚠️ DEVELOPMENT ONLY:</strong> These endpoints are only available when <code>NODE_ENV=development</code>. They return 404 in production.
-            </div>
-
-            <p>All development endpoints are prefixed with <code>/dev/auth</code> and are designed for backend testing purposes only.</p>
-
-            <h3>Purpose</h3>
-            <p>The development token endpoints allow backend developers to obtain valid JWT access tokens without:</p>
-            <ul>
-                <li>Running the mobile app</li>
-                <li>Going through the complete OAuth flow</li>
-                <li>Manually extracting tokens from console logs</li>
-                <li>Setting up frontend environment</li>
-            </ul>
-
-            <h3>Security</h3>
-            <ul>
-                <li><strong>Environment Protection:</strong> Endpoints return 404 in production</li>
-                <li><strong>Service Role Access:</strong> Uses Supabase Admin API with service role key</li>
-                <li><strong>Auto-confirmation:</strong> Test users are created with pre-confirmed emails</li>
-                <li><strong>Test User Pattern:</strong> Default email pattern is <code>test@coner.dev</code></li>
-            </ul>
-
-            <!-- Generate Test Token -->
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method post">POST</span>
-                    <span class="endpoint-path">/dev/auth/token</span>
-                </div>
-                <p class="endpoint-description">Generate a valid JWT access token for API testing.</p>
-
-                <h4>Request Body (all fields optional)</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"email"</span>: <span class="json-string">"developer@test.com"</span>,
-  <span class="json-key">"password"</span>: <span class="json-string">"DevPassword123!"</span>,
-  <span class="json-key">"metadata"</span>: {
-    <span class="json-key">"full_name"</span>: <span class="json-string">"Backend Developer"</span>,
-    <span class="json-key">"avatar_url"</span>: <span class="json-string">"https://example.com/avatar.png"</span>
-  }
-}</pre>
-                </div>
-
-                <h4>Default Values</h4>
-                <p>If no request body is provided:</p>
-                <ul>
-                    <li><code>email</code>: <code>test@coner.dev</code></li>
-                    <li><code>password</code>: <code>TestPassword123!</code></li>
-                    <li><code>metadata.full_name</code>: <code>Test User</code></li>
-                </ul>
-
-                <h4>Request Examples</h4>
-                <div class="code-examples-wrapper">
-                    <div class="code-example-tabs">
-                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
-                        <button class="code-example-tab" data-lang="python">Python</button>
-                        <button class="code-example-tab" data-lang="curl">cURL</button>
-                    </div>
-
-                    <div class="code-example-content active" data-lang="javascript">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript (Axios)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>const axios = require('axios');
-
-// Default token
-const response = await axios.post('http://146.190.92.0:8080/dev/auth/token');
-console.log(response.data);</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="python">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Python (requests)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>import requests
-
-# Default token
-response = requests.post('http://146.190.92.0:8080/dev/auth/token')
-print(response.json())</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="curl">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>cURL</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>curl -X POST http://146.190.92.0:8080/dev/auth/token</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <h4>Response (200 OK)</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON Response</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"success"</span>: <span class="json-boolean">true</span>,
-  <span class="json-key">"data"</span>: {
-    <span class="json-key">"access_token"</span>: <span class="json-string">"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."</span>,
-    <span class="json-key">"refresh_token"</span>: <span class="json-string">"v1-abc123..."</span>,
-    <span class="json-key">"expires_in"</span>: <span class="json-number">3600</span>,
-    <span class="json-key">"expires_at"</span>: <span class="json-number">1732123456</span>,
-    <span class="json-key">"token_type"</span>: <span class="json-string">"bearer"</span>,
-    <span class="json-key">"user"</span>: {
-      <span class="json-key">"id"</span>: <span class="json-string">"550e8400-e29b-41d4-a716-446655440000"</span>,
-      <span class="json-key">"email"</span>: <span class="json-string">"test@coner.dev"</span>,
-      <span class="json-key">"user_metadata"</span>: {
-        <span class="json-key">"full_name"</span>: <span class="json-string">"Test User"</span>
-      }
-    }
-  },
-  <span class="json-key">"message"</span>: <span class="json-string">"Test token generated successfully"</span>
-}</pre>
-                </div>
-
-                <h4>Using the Token</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>Bash</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre># Get token
-TOKEN=$(curl -s -X POST http://146.190.92.0:8080/dev/auth/token | jq -r '.data.access_token')
-
-# Use in protected endpoint
-curl -X GET http://146.190.92.0:8080/auth/me \
-  -H "Authorization: Bearer $TOKEN"</pre>
-                </div>
-            </div>
-
-            <!-- Generate Multiple Test Tokens -->
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method post">POST</span>
-                    <span class="endpoint-path">/dev/auth/tokens/batch</span>
-                </div>
-                <p class="endpoint-description">Generate multiple test tokens in a single request (batch creation).</p>
-
-                <h4>Request Body</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"count"</span>: <span class="json-number">5</span>
-}</pre>
-                </div>
-
-                <h4>Validation Rules</h4>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Field</th>
-                            <th>Type</th>
-                            <th>Required</th>
-                            <th>Validation</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><code>count</code></td>
-                            <td>number</td>
-                            <td><span class="badge optional">Optional</span></td>
-                            <td>Default: 5, Maximum: 20</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <h4>Request Example</h4>
-                <div class="code-examples-wrapper">
-                    <div class="code-example-tabs">
-                        <button class="code-example-tab active" data-lang="curl">cURL</button>
-                    </div>
-
-                    <div class="code-example-content active" data-lang="curl">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>cURL</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>curl -X POST http://146.190.92.0:8080/dev/auth/tokens/batch \
-  -H "Content-Type: application/json" \
-  -d '{"count": 3}'</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <h4>Response (200 OK)</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON Response</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"success"</span>: <span class="json-boolean">true</span>,
-  <span class="json-key">"data"</span>: [
-    {
-      <span class="json-key">"access_token"</span>: <span class="json-string">"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."</span>,
-      <span class="json-key">"user"</span>: {
-        <span class="json-key">"email"</span>: <span class="json-string">"test1@coner.dev"</span>
-      }
-    },
-    {
-      <span class="json-key">"access_token"</span>: <span class="json-string">"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."</span>,
-      <span class="json-key">"user"</span>: {
-        <span class="json-key">"email"</span>: <span class="json-string">"test2@coner.dev"</span>
-      }
-    }
-  ],
-  <span class="json-key">"message"</span>: <span class="json-string">"Generated 2 test tokens"</span>
-}</pre>
-                </div>
-            </div>
-
-            <!-- Delete Test User -->
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method delete">DELETE</span>
-                    <span class="endpoint-path">/dev/auth/user/:userId</span>
-                </div>
-                <p class="endpoint-description">Delete a test user for cleanup purposes.</p>
-
-                <h4>Path Parameters</h4>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Parameter</th>
-                            <th>Type</th>
-                            <th>Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><code>userId</code></td>
-                            <td>uuid</td>
-                            <td>The Supabase user ID to delete</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <h4>Request Example</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>cURL</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>curl -X DELETE http://146.190.92.0:8080/dev/auth/user/550e8400-e29b-41d4-a716-446655440000</pre>
-                </div>
-
-                <h4>Response (200 OK)</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON Response</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"success"</span>: <span class="json-boolean">true</span>,
-  <span class="json-key">"message"</span>: <span class="json-string">"Test user deleted successfully"</span>
-}</pre>
-                </div>
-            </div>
-
-            <h3>Development Workflow</h3>
-            <div class="alert info">
-                <strong>Typical Usage Pattern:</strong>
-                <ol style="margin: 0.5rem 0 0 1.5rem;">
-                    <li>Start development server: <code>cd src && npm run dev</code></li>
-                    <li>Generate test token: <code>POST /dev/auth/token</code></li>
-                    <li>Use token to test protected endpoints</li>
-                    <li>Clean up test users when done (optional)</li>
-                </ol>
-            </div>
-        </section>
-
-        <!-- Profile Endpoints -->
-        <section id="profile-endpoints" class="section">
-            <h2>User Profile Endpoints</h2>
-            <p>All user profile endpoints are prefixed with <code>/users</code> and require authentication.</p>
-
-            <div class="alert info">
-                <strong>Middleware Chain:</strong> <code>requireAuth</code> → <code>ensureProfile</code> → route handler
-            </div>
-
-            <!-- Get Current Profile -->
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method get">GET</span>
-                    <span class="endpoint-path">/users/profile</span>
-                </div>
-                <p class="endpoint-description">Get detailed profile information for the authenticated user.</p>
-
-                <h4>Request Example</h4>
-                <div class="code-examples-wrapper">
-                    <div class="code-example-tabs">
-                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
-                        <button class="code-example-tab" data-lang="python">Python</button>
-                        <button class="code-example-tab" data-lang="curl">cURL</button>
-                    </div>
-
-                    <div class="code-example-content active" data-lang="javascript">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript (Axios)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>const axios = require('axios');
-
-const response = await axios.get('http://146.190.92.0:8080/users/profile', {
-  headers: {
-    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
-  }
-});
-console.log(response.data);</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="python">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Python (requests)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>import requests
-
-headers = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}
-response = requests.get('http://146.190.92.0:8080/users/profile', headers=headers)
-print(response.json())</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="curl">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>cURL</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>curl -X GET http://146.190.92.0:8080/users/profile \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <h4>Response (200 OK)</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON Response</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"full_name"</span>: <span class="json-string">"Alice Smith"</span>,
-  <span class="json-key">"dob"</span>: <span class="json-string">"1995-03-15"</span>,
-  <span class="json-key">"sex"</span>: <span class="json-string">"female"</span>,
-  <span class="json-key">"phone_number"</span>: <span class="json-string">"1234567890"</span>,
-  <span class="json-key">"address"</span>: <span class="json-string">"123 Main St, San Francisco, CA 94102"</span>,
-  <span class="json-key">"school"</span>: <span class="json-string">"Stanford University"</span>,
-  <span class="json-key">"major"</span>: <span class="json-string">"Computer Science"</span>
-}</pre>
-                </div>
-            </div>
-
-            <!-- First-Time Profile Setup -->
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method put">PUT</span>
-                    <span class="endpoint-path">/users/profile-first</span>
-                </div>
-                <p class="endpoint-description">Complete the profile with all required information (first-time setup only).</p>
-
-                <div class="alert warning">
-                    <strong>One-Time Only:</strong> This endpoint can only be called <strong>once</strong> per user. All fields are required for first-time setup.
-                </div>
-
-                <h4>Request Example</h4>
-                <div class="code-examples-wrapper">
-                    <div class="code-example-tabs">
-                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
-                        <button class="code-example-tab" data-lang="python">Python</button>
-                        <button class="code-example-tab" data-lang="curl">cURL</button>
-                    </div>
-
-                    <div class="code-example-content active" data-lang="javascript">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript (Axios)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>const axios = require('axios');
-
-const response = await axios.put('http://146.190.92.0:8080/users/profile-first', {
-  full_name: 'Alice Smith',
-  dob: '1995-03-15',
-  sex: 'female',
-  phone_number: '1234567890',
-  address: '123 Main St, San Francisco, CA 94102',
-  school: 'Stanford University',
-  major: 'Computer Science'
-}, {
-  headers: {
-    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
-  }
-});
-console.log(response.data);</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="python">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Python (requests)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>import requests
-
-headers = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}
-data = {
-    'full_name': 'Alice Smith',
-    'dob': '1995-03-15',
-    'sex': 'female',
-    'phone_number': '1234567890',
-    'address': '123 Main St, San Francisco, CA 94102',
-    'school': 'Stanford University',
-    'major': 'Computer Science'
-}
-response = requests.put('http://146.190.92.0:8080/users/profile-first', json=data, headers=headers)
-print(response.json())</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="curl">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>cURL</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>curl -X PUT http://146.190.92.0:8080/users/profile-first \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "full_name": "Alice Smith",
-    "dob": "1995-03-15",
-    "sex": "female",
-    "phone_number": "1234567890",
-    "address": "123 Main St, San Francisco, CA 94102",
-    "school": "Stanford University",
-    "major": "Computer Science"
-  }'</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <h4>Validation Rules</h4>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Field</th>
-                            <th>Type</th>
-                            <th>Required</th>
-                            <th>Validation</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><code>full_name</code></td>
-                            <td>string</td>
-                            <td><span class="badge required">Required</span></td>
-                            <td>1-255 characters</td>
-                        </tr>
-                        <tr>
-                            <td><code>dob</code></td>
-                            <td>date</td>
-                            <td><span class="badge required">Required</span></td>
-                            <td>Age 0-150 years</td>
-                        </tr>
-                        <tr>
-                            <td><code>sex</code></td>
-                            <td>enum</td>
-                            <td><span class="badge required">Required</span></td>
-                            <td>"male", "female", or "other"</td>
-                        </tr>
-                        <tr>
-                            <td><code>phone_number</code></td>
-                            <td>string</td>
-                            <td><span class="badge required">Required</span></td>
-                            <td>8-15 digits only</td>
-                        </tr>
-                        <tr>
-                            <td><code>address</code></td>
-                            <td>string</td>
-                            <td><span class="badge required">Required</span></td>
-                            <td>1-500 characters</td>
-                        </tr>
-                        <tr>
-                            <td><code>school</code></td>
-                            <td>string</td>
-                            <td><span class="badge required">Required</span></td>
-                            <td>1-255 characters</td>
-                        </tr>
-                        <tr>
-                            <td><code>major</code></td>
-                            <td>string</td>
-                            <td><span class="badge required">Required</span></td>
-                            <td>1-255 characters</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Update Profile -->
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method patch">PATCH</span>
-                    <span class="endpoint-path">/users/profile</span>
-                </div>
-                <p class="endpoint-description">Update profile fields after first-time setup (partial updates allowed).</p>
-
-                <div class="alert danger">
-                    <strong>Locked Fields:</strong> <code>full_name</code> and <code>sex</code> cannot be changed after first-time setup.
-                </div>
-
-                <h4>Request Example</h4>
-                <div class="code-examples-wrapper">
-                    <div class="code-example-tabs">
-                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
-                        <button class="code-example-tab" data-lang="python">Python</button>
-                        <button class="code-example-tab" data-lang="curl">cURL</button>
-                    </div>
-
-                    <div class="code-example-content active" data-lang="javascript">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript (Axios)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>const axios = require('axios');
-
-const response = await axios.patch('http://146.190.92.0:8080/users/profile', {
-  phone_number: '9876543210',
-  address: '456 Oak Ave, New York, NY 10001',
-  school: 'MIT'
-}, {
-  headers: {
-    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
-  }
-});
-console.log(response.data);</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="python">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Python (requests)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>import requests
-
-headers = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}
-data = {
-    'phone_number': '9876543210',
-    'address': '456 Oak Ave, New York, NY 10001',
-    'school': 'MIT'
-}
-response = requests.patch('http://146.190.92.0:8080/users/profile', json=data, headers=headers)
-print(response.json())</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="curl">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>cURL</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>curl -X PATCH http://146.190.92.0:8080/users/profile \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "phone_number": "9876543210",
-    "address": "456 Oak Ave, New York, NY 10001",
-    "school": "MIT"
-  }'</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <h4>Important Notes</h4>
-                <ul>
-                    <li>All fields are optional - only include fields you want to update</li>
-                    <li>Omitted fields will retain their current values</li>
-                    <li>Attempting to update locked fields will result in a <code>400 Bad Request</code> error</li>
-                </ul>
-            </div>
-
-            <!-- Get Legacy Profile -->
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method get">GET</span>
-                    <span class="endpoint-path">/users/me</span>
-                </div>
-                <p class="endpoint-description">Get basic profile information (legacy endpoint).</p>
-
-                <h4>Request Example</h4>
-                <div class="code-examples-wrapper">
-                    <div class="code-example-tabs">
-                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
-                        <button class="code-example-tab" data-lang="python">Python</button>
-                        <button class="code-example-tab" data-lang="curl">cURL</button>
-                    </div>
-
-                    <div class="code-example-content active" data-lang="javascript">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript (Axios)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>const axios = require('axios');
-
-const response = await axios.get('http://146.190.92.0:8080/users/me', {
-  headers: {
-    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
-  }
-});
-console.log(response.data);</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="python">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Python (requests)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>import requests
-
-headers = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}
-response = requests.get('http://146.190.92.0:8080/users/me', headers=headers)
-print(response.json())</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="curl">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>cURL</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>curl -X GET http://146.190.92.0:8080/users/me \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <h4>Response (200 OK)</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON Response</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"id"</span>: <span class="json-string">"550e8400-e29b-41d4-a716-446655440000"</span>,
-  <span class="json-key">"display_name"</span>: <span class="json-string">"Alice Smith"</span>,
-  <span class="json-key">"avatar_url"</span>: <span class="json-string">"https://cdn.example.com/avatar.png"</span>,
-  <span class="json-key">"email"</span>: <span class="json-string">"user@example.com"</span>,
-  <span class="json-key">"profession"</span>: <span class="json-string">"Software Engineer"</span>,
-  <span class="json-key">"company"</span>: <span class="json-string">"Tech Corp"</span>,
-  <span class="json-key">"bio"</span>: <span class="json-string">"Passionate about building great products"</span>,
-  <span class="json-key">"skills"</span>: [<span class="json-string">"JavaScript"</span>, <span class="json-string">"React"</span>, <span class="json-string">"Node.js"</span>],
-  <span class="json-key">"work_style"</span>: <span class="json-string">"collaborative"</span>,
-  <span class="json-key">"years_experience"</span>: <span class="json-number">5</span>,
-  <span class="json-key">"linkedin_url"</span>: <span class="json-string">"https://linkedin.com/in/alice"</span>,
-  <span class="json-key">"portfolio_url"</span>: <span class="json-string">"https://alice.dev"</span>,
-  <span class="json-key">"created_at"</span>: <span class="json-string">"2025-01-15T10:30:00Z"</span>,
-  <span class="json-key">"updated_at"</span>: <span class="json-string">"2025-01-20T14:22:00Z"</span>,
-  <span class="json-key">"last_seen_at"</span>: <span class="json-string">"2025-01-25T09:15:00Z"</span>,
-  <span class="json-key">"is_deleted"</span>: <span class="json-boolean">false</span>
-}</pre>
-                </div>
-            </div>
-        </section>
-
-        <!-- User Answer Endpoints -->
-        <section id="user-answer-endpoints" class="section">
-            <h2>User Answer Endpoints</h2>
-            <p>All user answer endpoints are prefixed with <code>/answers</code> and require authentication.</p>
-
-            <!-- Get My Answer -->
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method get">GET</span>
-                    <span class="endpoint-path">/answers</span>
-                </div>
-                <p class="endpoint-description">Retrieve the authenticated user's answer.</p>
-
-                <h4>Request Example</h4>
-                <div class="code-examples-wrapper">
-                    <div class="code-example-tabs">
-                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
-                        <button class="code-example-tab" data-lang="python">Python</button>
-                        <button class="code-example-tab" data-lang="curl">cURL</button>
-                    </div>
-
-                    <div class="code-example-content active" data-lang="javascript">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript (Axios)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>const axios = require('axios');
-
-const response = await axios.get('http://146.190.92.0:8080/answers', {
-  headers: {
-    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
-  }
-});
-console.log(response.data);</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="python">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Python (requests)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>import requests
-
-headers = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}
-response = requests.get('http://146.190.92.0:8080/answers', headers=headers)
-print(response.json())</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="curl">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>cURL</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>curl -X GET http://146.190.92.0:8080/answers \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <h4>Response (200 OK)</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON Response</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"message"</span>: <span class="json-string">"Your answer fetched"</span>,
-  <span class="json-key">"data"</span>: {
-    <span class="json-key">"user_id"</span>: <span class="json-string">"550e8400-e29b-41d4-a716-446655440000"</span>,
-    <span class="json-key">"dating_style"</span>: <span class="json-string">"loud"</span>,
-    <span class="json-key">"match_preference"</span>: <span class="json-string">"same field"</span>,
-    <span class="json-key">"user_field"</span>: <span class="json-string">"Computer science"</span>,
-    <span class="json-key">"purpose"</span>: <span class="json-string">"studying"</span>,
-    <span class="json-key">"created_at"</span>: <span class="json-string">"2025-01-15T10:30:00.000Z"</span>,
-    <span class="json-key">"updated_at"</span>: <span class="json-string">"2025-01-15T10:30:00.000Z"</span>
-  }
-}</pre>
-                </div>
-            </div>
-
-            <!-- Create My Answer -->
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method post">POST</span>
-                    <span class="endpoint-path">/answers</span>
-                </div>
-                <p class="endpoint-description">Submit a new answer for the authenticated user. Each user can only submit once.</p>
-
-                <h4>Request Example</h4>
-                <div class="code-examples-wrapper">
-                    <div class="code-example-tabs">
-                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
-                        <button class="code-example-tab" data-lang="python">Python</button>
-                        <button class="code-example-tab" data-lang="curl">cURL</button>
-                    </div>
-
-                    <div class="code-example-content active" data-lang="javascript">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript (Axios)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>const axios = require('axios');
-
-const response = await axios.post('http://146.190.92.0:8080/answers', {
-  dating_style: 'loud',
-  match_preference: 'same field',
-  user_field: 'Computer science',
-  purpose: 'studying'
-}, {
-  headers: {
-    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
-  }
-});
-console.log(response.data);</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="python">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Python (requests)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>import requests
-
-headers = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}
-data = {
-    'dating_style': 'loud',
-    'match_preference': 'same field',
-    'user_field': 'Computer science',
-    'purpose': 'studying'
-}
-response = requests.post('http://146.190.92.0:8080/answers', json=data, headers=headers)
-print(response.json())</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="curl">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>cURL</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>curl -X POST http://146.190.92.0:8080/answers \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "dating_style": "loud",
-    "match_preference": "same field",
-    "user_field": "Computer science",
-    "purpose": "studying"
-  }'</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <h4>Response (201 Created)</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON Response</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"message"</span>: <span class="json-string">"Your answer created"</span>,
-  <span class="json-key">"data"</span>: {
-    <span class="json-key">"user_id"</span>: <span class="json-string">"550e8400-e29b-41d4-a716-446655440000"</span>,
-    <span class="json-key">"dating_style"</span>: <span class="json-string">"loud"</span>,
-    <span class="json-key">"match_preference"</span>: <span class="json-string">"same field"</span>,
-    <span class="json-key">"user_field"</span>: <span class="json-string">"Computer science"</span>,
-    <span class="json-key">"purpose"</span>: <span class="json-string">"studying"</span>,
-    <span class="json-key">"created_at"</span>: <span class="json-string">"2025-01-15T10:30:00.000Z"</span>,
-    <span class="json-key">"updated_at"</span>: <span class="json-string">"2025-01-15T10:30:00.000Z"</span>
-  }
-}</pre>
-                </div>
-            </div>
-
-            <!-- Update My Answer -->
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method put">PUT</span>
-                    <span class="endpoint-path">/answers</span>
-                </div>
-                <p class="endpoint-description">Update the authenticated user's existing answer. Supports partial updates.</p>
-
-                <h4>Request Example</h4>
-                <div class="code-examples-wrapper">
-                    <div class="code-example-tabs">
-                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
-                        <button class="code-example-tab" data-lang="python">Python</button>
-                        <button class="code-example-tab" data-lang="curl">cURL</button>
-                    </div>
-
-                    <div class="code-example-content active" data-lang="javascript">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript (Axios)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>const axios = require('axios');
-
-const response = await axios.put('http://146.190.92.0:8080/answers', {
-  dating_style: 'quiet',
-  purpose: 'working'
-}, {
-  headers: {
-    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
-  }
-});
-console.log(response.data);</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="python">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Python (requests)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>import requests
-
-headers = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}
-data = {
-    'dating_style': 'quiet',
-    'purpose': 'working'
-}
-response = requests.put('http://146.190.92.0:8080/answers', json=data, headers=headers)
-print(response.json())</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="curl">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>cURL</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>curl -X PUT http://146.190.92.0:8080/answers \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "dating_style": "quiet",
-    "purpose": "working"
-  }'</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <h4>Response (200 OK)</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON Response</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"message"</span>: <span class="json-string">"Your answer updated"</span>,
-  <span class="json-key">"data"</span>: {
-    <span class="json-key">"user_id"</span>: <span class="json-string">"550e8400-e29b-41d4-a716-446655440000"</span>,
-    <span class="json-key">"dating_style"</span>: <span class="json-string">"quiet"</span>,
-    <span class="json-key">"match_preference"</span>: <span class="json-string">"same field"</span>,
-    <span class="json-key">"user_field"</span>: <span class="json-string">"Computer science"</span>,
-    <span class="json-key">"purpose"</span>: <span class="json-string">"working"</span>,
-    <span class="json-key">"created_at"</span>: <span class="json-string">"2025-01-15T10:30:00.000Z"</span>,
-    <span class="json-key">"updated_at"</span>: <span class="json-string">"2025-01-15T14:45:00.000Z"</span>
-  }
-}</pre>
-                </div>
-            </div>
-        </section>
-
-        <!-- Matching Queue Endpoints -->
-        <section id="matching-endpoints" class="section">
-            <h2>Matching Queue Endpoints</h2>
-            <p>Endpoints for joining the matching queue.</p>
-
-            <!-- Join Queue -->
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method post">POST</span>
-                    <span class="endpoint-path">/queue/join</span>
-                </div>
-                <p class="endpoint-description">Join the matching queue ("Find now" or "Match later").</p>
-
-                <h4>Request Example</h4>
-                <div class="code-examples-wrapper">
-                    <div class="code-example-tabs">
-                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
-                        <button class="code-example-tab" data-lang="python">Python</button>
-                        <button class="code-example-tab" data-lang="curl">cURL</button>
-                    </div>
-
-                    <div class="code-example-content active" data-lang="javascript">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript (Axios)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>const axios = require('axios');
-
-// "Find now" example
-const response = await axios.post('http://146.190.92.0:8080/queue/join', {
-  location: {
-    lat: 10.779783,
-    lng: 106.699018,
-    placeId: 'coffee-123'
-  }
-}, {
-  headers: {
-    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
-  }
-});
-console.log(response.data);</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="python">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Python (requests)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>import requests
-
-headers = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}
-# "Match later" example
-data = {
-    'location': {
-        'lat': 10.779783,
-        'lng': 106.699018,
-        'placeId': 'coffee-123'
-    },
-    'timeWindow': {
-        'start': '2025-11-14T14:00:00Z',
-        'end': '2025-11-14T16:00:00Z'
-    }
-}
-response = requests.post('http://146.190.92.0:8080/queue/join', json=data, headers=headers)
-print(response.json())</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="curl">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>cURL</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>curl -X POST http://146.190.92.0:8080/queue/join \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "location": {
-      "lat": 10.779783,
-      "lng": 106.699018,
-      "placeId": "coffee-123"
-    }
-  }'</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <h4>Response (201 Created)</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON Response</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"success"</span>: <span class="json-boolean">true</span>,
-  <span class="json-key">"queueEntry"</span>: {
-    <span class="json-key">"queueId"</span>: <span class="json-string">"eab71b1c-cb88-4736-9909-ef99e9abb61d"</span>,
-    <span class="json-key">"position"</span>: <span class="json-number">2</span>,
-    <span class="json-key">"joinedAt"</span>: <span class="json-string">"2025-11-14T12:09:14.481Z"</span>,
-    <span class="json-key">"timeWindow"</span>: {
-      <span class="json-key">"start"</span>: <span class="json-string">"2025-11-14T12:14:14.481Z"</span>,
-      <span class="json-key">"end"</span>: <span class="json-string">"2025-11-14T18:09:14.481Z"</span>
-    }
-  }
-}</pre>
-                </div>
-            </div>
-        </section>
-
-        <!-- Question Endpoints -->
-        <section id="question-endpoints" class="section">
-            <h2>Question Endpoints</h2>
-            <p>Endpoints for retrieving matching questions.</p>
-
-            <!-- Get All Questions -->
-            <div class="endpoint">
-                <div class="endpoint-header">
-                    <span class="method get">GET</span>
-                    <span class="endpoint-path">/questions</span>
-                </div>
-                <p class="endpoint-description">Retrieve all active matching questions in display order.</p>
-
-                <h4>Request Example</h4>
-                <div class="code-examples-wrapper">
-                    <div class="code-example-tabs">
-                        <button class="code-example-tab active" data-lang="javascript">JavaScript</button>
-                        <button class="code-example-tab" data-lang="python">Python</button>
-                        <button class="code-example-tab" data-lang="curl">cURL</button>
-                    </div>
-
-                    <div class="code-example-content active" data-lang="javascript">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript (Axios)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>const axios = require('axios');
-
-const response = await axios.get('http://146.190.92.0:8080/questions', {
-  headers: {
-    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
-  }
-});
-console.log(response.data);</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="python">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Python (requests)</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>import requests
-
-headers = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}
-response = requests.get('http://146.190.92.0:8080/questions', headers=headers)
-print(response.json())</pre>
-                        </div>
-                    </div>
-
-                    <div class="code-example-content" data-lang="curl">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>cURL</span>
-                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <pre>curl -X GET http://146.190.92.0:8080/questions \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <h4>Response (200 OK)</h4>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span>JSON Response</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre>{
-  <span class="json-key">"message"</span>: <span class="json-string">"Get questions successfully"</span>,
-  <span class="json-key">"data"</span>: [
-    {
-      <span class="json-key">"id"</span>: <span class="json-string">"550e8400-e29b-41d4-a716-446655440000"</span>,
-      <span class="json-key">"question_text"</span>: <span class="json-string">"What are your interests?"</span>,
-      <span class="json-key">"options"</span>: [
-        { <span class="json-key">"value"</span>: <span class="json-string">"sports"</span>, <span class="json-key">"label"</span>: <span class="json-string">"Sports"</span> },
-        { <span class="json-key">"value"</span>: <span class="json-string">"music"</span>, <span class="json-key">"label"</span>: <span class="json-string">"Music"</span> },
-        { <span class="json-key">"value"</span>: <span class="json-string">"travel"</span>, <span class="json-key">"label"</span>: <span class="json-string">"Travel"</span> }
-      ],
-      <span class="json-key">"display_order"</span>: <span class="json-number">1</span>
-    }
-  ]
-}</pre>
-                </div>
-            </div>
-        </section>
-
-        <!-- Error Handling -->
-        <section id="errors" class="section">
-            <h2>Error Handling</h2>
-
-            <h3>Error Response Format</h3>
-            <p>All errors follow a consistent JSON format:</p>
-
-            <div class="code-block">
-                <div class="code-header">
-                    <span>JSON</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre>{
-  <span class="json-key">"error"</span>: <span class="json-string">"Error message here"</span>
-}</pre>
-            </div>
-
-            <h3>Validation Errors</h3>
-            <p>Zod validation errors include detailed field-level information:</p>
-
-            <div class="code-block">
-                <div class="code-header">
-                    <span>JSON</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre>{
-  <span class="json-key">"error"</span>: <span class="json-string">"ValidationError"</span>,
-  <span class="json-key">"details"</span>: {
-    <span class="json-key">"email"</span>: [<span class="json-string">"Please provide a valid email address"</span>],
-    <span class="json-key">"password"</span>: [<span class="json-string">"Password must be at least 8 characters long"</span>]
-  }
-}</pre>
-            </div>
-
-            <h3>HTTP Status Codes</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Code</th>
-                        <th>Meaning</th>
-                        <th>Common Causes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>200</code></td>
-                        <td>OK</td>
-                        <td>Successful GET/PATCH request</td>
-                    </tr>
-                    <tr>
-                        <td><code>201</code></td>
-                        <td>Created</td>
-                        <td>Successful POST request (resource created)</td>
-                    </tr>
-                    <tr>
-                        <td><code>204</code></td>
-                        <td>No Content</td>
-                        <td>Successful DELETE or logout request</td>
-                    </tr>
-                    <tr>
-                        <td><code>400</code></td>
-                        <td>Bad Request</td>
-                        <td>Validation error or invalid request</td>
-                    </tr>
-                    <tr>
-                        <td><code>401</code></td>
-                        <td>Unauthorized</td>
-                        <td>Missing or invalid JWT token</td>
-                    </tr>
-                    <tr>
-                        <td><code>404</code></td>
-                        <td>Not Found</td>
-                        <td>Resource not found</td>
-                    </tr>
-                    <tr>
-                        <td><code>500</code></td>
-                        <td>Internal Server Error</td>
-                        <td>Server-side error</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h3>Common Error Scenarios</h3>
-
-            <div class="alert danger">
-                <strong>Authentication Error:</strong>
-                <pre style="margin-top: 0.5rem; background: transparent; padding: 0;">{ "error": "Unauthorized: JWT token missing or invalid" }</pre>
-                <p style="margin-top: 0.5rem; margin-bottom: 0;"><strong>Solution:</strong> Ensure valid JWT token is included in Authorization header.</p>
-            </div>
-
-            <div class="alert warning">
-                <strong>Profile Already Initialized:</strong>
-                <pre style="margin-top: 0.5rem; background: transparent; padding: 0;">{ "error": "Profile already initialized" }</pre>
-                <p style="margin-top: 0.5rem; margin-bottom: 0;"><strong>Solution:</strong> Use PATCH /users/profile for updates instead.</p>
-            </div>
-
-            <div class="alert warning">
-                <strong>Locked Field Update:</strong>
-                <pre style="margin-top: 0.5rem; background: transparent; padding: 0;">{ "error": "ValidationError", "details": { "full_name": ["Cannot update full name after first completion"] } }</pre>
-                <p style="margin-top: 0.5rem; margin-bottom: 0;"><strong>Solution:</strong> Remove locked fields (full_name, sex) from update request.</p>
-            </div>
-        </section>
-
             </div>
         </main>
     </div>
@@ -1868,8 +93,537 @@ print(response.json())</pre>
     <!-- Scripts -->
     <script src="assets/scripts.js"></script>
     <script>
+        // API Page Renderer
+        const APIRenderer = {
+            baseUrl: '',
+
+            // Escape HTML to prevent XSS
+            escapeHtml(str) {
+                if (typeof str !== 'string') return str;
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            },
+
+            // Replace {{baseUrl}} placeholder in code examples
+            replaceBaseUrl(code) {
+                return code.replace(/\{\{baseUrl\}\}/g, this.baseUrl);
+            },
+
+            // Format JSON for display with syntax highlighting
+            formatJson(obj) {
+                if (obj === null) return '<span class="json-null">null</span>';
+                const jsonStr = JSON.stringify(obj, null, 2);
+                return jsonStr
+                    .replace(/"([^"]+)":/g, '<span class="json-key">"$1"</span>:')
+                    .replace(/: "([^"]+)"/g, ': <span class="json-string">"$1"</span>')
+                    .replace(/: (\d+)/g, ': <span class="json-number">$1</span>')
+                    .replace(/: (true|false)/g, ': <span class="json-boolean">$1</span>')
+                    .replace(/: (null)/g, ': <span class="json-null">$1</span>');
+            },
+
+            // Get method badge class
+            getMethodClass(method) {
+                return method.toLowerCase();
+            },
+
+            // Render validation rules table
+            renderValidationTable(validation) {
+                if (!validation || validation.length === 0) return '';
+                return `
+                    <h4>Validation Rules</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Validation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${validation.map(v => `
+                                <tr>
+                                    <td><code>${this.escapeHtml(v.field)}</code></td>
+                                    <td>${this.escapeHtml(v.type)}</td>
+                                    <td><span class="badge ${v.required ? 'required' : 'optional'}">${v.required ? 'Required' : 'Optional'}</span></td>
+                                    <td>${v.rules}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            },
+
+            // Render query params table
+            renderQueryParamsTable(params) {
+                if (!params || params.length === 0) return '';
+                return `
+                    <h4>Query Parameters</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${params.map(p => `
+                                <tr>
+                                    <td><code>${this.escapeHtml(p.name)}</code></td>
+                                    <td>${this.escapeHtml(p.type)}</td>
+                                    <td><span class="badge ${p.required ? 'required' : 'optional'}">${p.required ? 'Required' : 'Optional'}</span></td>
+                                    <td>${p.description}${p.default !== undefined ? ` (default: ${p.default})` : ''}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            },
+
+            // Render path params table
+            renderPathParamsTable(params) {
+                if (!params || params.length === 0) return '';
+                return `
+                    <h4>Path Parameters</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${params.map(p => `
+                                <tr>
+                                    <td><code>${this.escapeHtml(p.name)}</code></td>
+                                    <td>${this.escapeHtml(p.type)}</td>
+                                    <td>${p.description}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            },
+
+            // Render code examples with tabs
+            renderCodeExamples(endpoint) {
+                if (!endpoint.codeExamples) return '';
+
+                const languages = ['javascript', 'python', 'curl'];
+                const langLabels = {
+                    javascript: 'JavaScript (Axios)',
+                    python: 'Python (requests)',
+                    curl: 'cURL'
+                };
+
+                return `
+                    <h4>Request Example</h4>
+                    <div class="code-examples-wrapper">
+                        <div class="code-example-tabs">
+                            ${languages.map((lang, i) => `
+                                <button class="code-example-tab${i === 0 ? ' active' : ''}" data-lang="${lang}">${lang.charAt(0).toUpperCase() + lang.slice(1)}</button>
+                            `).join('')}
+                        </div>
+                        ${languages.map((lang, i) => `
+                            <div class="code-example-content${i === 0 ? ' active' : ''}" data-lang="${lang}">
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>${langLabels[lang]}</span>
+                                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                    </div>
+                                    <pre>${this.escapeHtml(this.replaceBaseUrl(endpoint.codeExamples[lang] || ''))}</pre>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            },
+
+            // Render responses
+            renderResponses(responses) {
+                if (!responses || responses.length === 0) return '';
+
+                return responses.map(resp => `
+                    <h4>Response (${resp.status} ${resp.statusText})${resp.description ? ` - ${resp.description}` : ''}</h4>
+                    ${resp.note ? `<p>${resp.note}</p>` : ''}
+                    ${resp.body !== null ? `
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>JSON Response</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>${this.formatJson(resp.body)}</pre>
+                        </div>
+                    ` : ''}
+                `).join('');
+            },
+
+            // Render a single endpoint
+            renderEndpoint(endpoint) {
+                let html = `
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method ${this.getMethodClass(endpoint.method)}">${endpoint.method}</span>
+                            <span class="endpoint-path">${this.escapeHtml(endpoint.path)}</span>
+                        </div>
+                        <p class="endpoint-description">${endpoint.description}</p>
+                `;
+
+                // Auth note
+                if (endpoint.auth && endpoint.authNote) {
+                    html += `
+                        <div class="alert info">
+                            <strong>Authentication Required:</strong> ${endpoint.authNote}
+                        </div>
+                    `;
+                }
+
+                // Warning
+                if (endpoint.warning) {
+                    html += `
+                        <div class="alert warning">
+                            <strong>Important:</strong> ${endpoint.warning}
+                        </div>
+                    `;
+                }
+
+                // Danger
+                if (endpoint.danger) {
+                    html += `
+                        <div class="alert danger">
+                            <strong>Locked Fields:</strong> ${endpoint.danger}
+                        </div>
+                    `;
+                }
+
+                // How it works
+                if (endpoint.howItWorks) {
+                    html += `
+                        <h4>How It Works</h4>
+                        <ol>
+                            ${endpoint.howItWorks.map(step => `<li>${step}</li>`).join('')}
+                        </ol>
+                    `;
+                }
+
+                // Path params
+                html += this.renderPathParamsTable(endpoint.pathParams);
+
+                // Query params
+                html += this.renderQueryParamsTable(endpoint.queryParams);
+
+                // Request body
+                if (endpoint.requestBody && !endpoint.requestBody._formField) {
+                    html += `
+                        <h4>Request Body${endpoint.requestNote ? ` <small>(${endpoint.requestNote})</small>` : ''}</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>JSON</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>${this.formatJson(endpoint.requestBody)}</pre>
+                        </div>
+                    `;
+                } else if (endpoint.requestBody && endpoint.requestBody._formField) {
+                    html += `
+                        <h4>Request Body (${endpoint.contentType || 'multipart/form-data'})</h4>
+                        <p><strong>Field:</strong> <code>${endpoint.requestBody._formField}</code></p>
+                        <p>${endpoint.requestBody._note}</p>
+                    `;
+                }
+
+                // Alternate request body
+                if (endpoint.alternateRequestBody) {
+                    html += `
+                        <h4>Alternate Request Body (for "Match later")</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>JSON</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>${this.formatJson(endpoint.alternateRequestBody)}</pre>
+                        </div>
+                    `;
+                }
+
+                // Defaults
+                if (endpoint.defaults) {
+                    html += `
+                        <h4>Default Values</h4>
+                        <p>If no request body is provided:</p>
+                        <ul>
+                            ${endpoint.defaults.map(d => `<li>${d}</li>`).join('')}
+                        </ul>
+                    `;
+                }
+
+                // Validation
+                html += this.renderValidationTable(endpoint.validation);
+
+                // Notes
+                if (endpoint.notes) {
+                    html += `
+                        <h4>Important Notes</h4>
+                        <ul>
+                            ${endpoint.notes.map(n => `<li>${n}</li>`).join('')}
+                        </ul>
+                    `;
+                }
+
+                // Code examples
+                html += this.renderCodeExamples(endpoint);
+
+                // Responses
+                html += this.renderResponses(endpoint.responses);
+
+                // Errors
+                if (endpoint.errors) {
+                    html += `
+                        <h4>Error Responses</h4>
+                        <ul>
+                            ${endpoint.errors.map(e => `<li><code>${this.escapeHtml(e)}</code></li>`).join('')}
+                        </ul>
+                    `;
+                }
+
+                // Usage example
+                if (endpoint.usageExample) {
+                    html += `
+                        <h4>${endpoint.usageExample.title}</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>${endpoint.usageExample.language || 'Bash'}</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>${this.escapeHtml(this.replaceBaseUrl(endpoint.usageExample.code))}</pre>
+                        </div>
+                    `;
+                }
+
+                html += `</div>`;
+                return html;
+            },
+
+            // Render error section
+            renderErrorSection(section) {
+                let html = `<section id="${section.id}" class="section">
+                    <h2>${section.title}</h2>
+                `;
+
+                // Error format
+                if (section.errorFormat) {
+                    html += `
+                        <h3>${section.errorFormat.title}</h3>
+                        <p>${section.errorFormat.description}</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>JSON</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>${this.formatJson(section.errorFormat.example)}</pre>
+                        </div>
+                    `;
+                }
+
+                // Validation errors
+                if (section.validationErrors) {
+                    html += `
+                        <h3>${section.validationErrors.title}</h3>
+                        <p>${section.validationErrors.description}</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>JSON</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre>${this.formatJson(section.validationErrors.example)}</pre>
+                        </div>
+                    `;
+                }
+
+                // HTTP codes
+                if (section.httpCodes) {
+                    html += `
+                        <h3>HTTP Status Codes</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Meaning</th>
+                                    <th>Common Causes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${section.httpCodes.map(c => `
+                                    <tr>
+                                        <td><code>${c.code}</code></td>
+                                        <td>${c.meaning}</td>
+                                        <td>${c.description}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                }
+
+                // Common errors
+                if (section.commonErrors) {
+                    html += `<h3>Common Error Scenarios</h3>`;
+                    section.commonErrors.forEach(err => {
+                        html += `
+                            <div class="alert ${err.type}">
+                                <strong>${err.title}</strong>
+                                <pre style="margin-top: 0.5rem; background: transparent; padding: 0;">${this.escapeHtml(err.example)}</pre>
+                                <p style="margin-top: 0.5rem; margin-bottom: 0;"><strong>Solution:</strong> ${err.solution}</p>
+                            </div>
+                        `;
+                    });
+                }
+
+                html += `</section>`;
+                return html;
+            },
+
+            // Render a section
+            renderSection(section) {
+                // Handle error section specially
+                if (section.isErrorSection) {
+                    return this.renderErrorSection(section);
+                }
+
+                let html = `<section id="${section.id}" class="section">
+                    <h2>${section.title}</h2>
+                `;
+
+                // Section description
+                if (section.description) {
+                    html += `<p>${section.description}</p>`;
+                }
+
+                // Danger alert
+                if (section.danger) {
+                    html += `
+                        <div class="alert danger">
+                            <strong>DEVELOPMENT ONLY:</strong> ${section.danger}
+                        </div>
+                    `;
+                }
+
+                // Info alert
+                if (section.info) {
+                    html += `
+                        <div class="alert info">
+                            ${section.info}
+                        </div>
+                    `;
+                }
+
+                // Additional info (purpose, security, etc.)
+                if (section.additionalInfo) {
+                    Object.values(section.additionalInfo).forEach(info => {
+                        html += `<h3>${info.title}</h3>`;
+                        if (info.content) {
+                            html += `<p>${info.content}</p>`;
+                        }
+                        if (info.list) {
+                            html += `<ul>${info.list.map(item => `<li>${item}</li>`).join('')}</ul>`;
+                        }
+                    });
+                }
+
+                // Endpoints
+                if (section.endpoints) {
+                    section.endpoints.forEach(endpoint => {
+                        html += this.renderEndpoint(endpoint);
+                    });
+                }
+
+                // Workflow
+                if (section.workflow) {
+                    html += `
+                        <h3>${section.workflow.title}</h3>
+                        <div class="alert ${section.workflow.type || 'info'}">
+                            ${section.workflow.content}
+                            <ol style="margin: 0.5rem 0 0 1.5rem;">
+                                ${section.workflow.steps.map(step => `<li>${step}</li>`).join('')}
+                            </ol>
+                        </div>
+                    `;
+                }
+
+                html += `</section>`;
+                return html;
+            },
+
+            // Main render function
+            async render() {
+                const apiConfig = await ConfigLoader.load('config/api-config.json');
+                if (!apiConfig) {
+                    document.getElementById('api-content').innerHTML = `
+                        <div class="alert danger">
+                            <strong>Error:</strong> Failed to load API configuration. Please refresh the page.
+                        </div>
+                    `;
+                    return;
+                }
+
+                this.baseUrl = apiConfig.baseUrl;
+
+                // Update page info
+                document.getElementById('info-banner-content').innerHTML = `<p>${apiConfig.page.infoBanner}</p>`;
+                document.getElementById('public-endpoint-banner').innerHTML = `<strong>Public Development Endpoint:</strong> ${apiConfig.page.publicEndpointBanner}`;
+
+                // Render all sections
+                let html = '';
+                apiConfig.sections.forEach(section => {
+                    html += this.renderSection(section);
+                });
+
+                document.getElementById('api-content').innerHTML = html;
+
+                // Initialize code example tabs
+                initCodeExampleTabs();
+
+                // Build sidebar navigation
+                buildSidebarNav();
+                restoreNavState();
+                initEnhancedScrollHighlight();
+            }
+        };
+
+        // Language switcher
+        function switchAllCodeTabs(language) {
+            // Update button states
+            document.querySelectorAll('.language-switcher .lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === language);
+            });
+
+            // Switch all code tabs
+            document.querySelectorAll('.code-examples-wrapper').forEach(wrapper => {
+                const tabs = wrapper.querySelectorAll('.code-example-tab');
+                const contents = wrapper.querySelectorAll('.code-example-content');
+
+                tabs.forEach(tab => {
+                    tab.classList.toggle('active', tab.dataset.lang === language);
+                });
+
+                contents.forEach(content => {
+                    content.classList.toggle('active', content.dataset.lang === language);
+                });
+            });
+        }
+
         // Initialize page
-        initPage('api.html');
+        async function initAPIPage() {
+            await initPage('api.html');
+            await APIRenderer.render();
+        }
+
+        // Start
+        initAPIPage();
     </script>
 </body>
 </html>

@@ -33,9 +33,8 @@
     },
     {
       "title": "API Reference",
-      "path": "swagger-ui.html",
-      "icon": "📚",
-      "primary": true
+      "path": "api.html",
+      "icon": "📚"
     },
     {
       "title": "Changelog",
@@ -46,14 +45,6 @@
       "title": "Technical Docs",
       "path": "technical-docs.html",
       "icon": "⚙️"
-    }
-  ],
-  "deprecatedPages": [
-    {
-      "path": "api.html",
-      "replacedBy": "swagger-ui.html",
-      "deprecatedOn": "2025-11-29",
-      "removalDate": "2025-12-31"
     }
   ]
 }

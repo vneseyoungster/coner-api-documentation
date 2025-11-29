@@ -2,106 +2,1124 @@
   "page": {
     "title": "API Reference",
     "description": "Complete API endpoint reference with request/response examples",
-    "deprecationNotice": "This page is deprecated. Please use swagger-ui.html for the interactive API documentation."
+    "infoBanner": "This is the complete API reference for the Coner Backend. All endpoints require proper authentication unless otherwise specified.",
+    "publicEndpointBanner": "The API is accessible at <code>http://146.190.92.0:8080</code>. All code examples below use this endpoint. You can use this for testing and development purposes."
   },
+  "baseUrl": "http://146.190.92.0:8080",
+  "languages": ["javascript", "python", "curl"],
   "sections": [
     {
+      "id": "health",
+      "title": "Health Check",
+      "icon": "heart-pulse",
+      "description": "",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/health",
+          "description": "Checks the health status of the API server, database, and Redis.",
+          "auth": false,
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.get('{{baseUrl}}/health');\nconsole.log(response.data);",
+            "python": "import requests\n\nresponse = requests.get('{{baseUrl}}/health')\nprint(response.json())",
+            "curl": "curl -X GET {{baseUrl}}/health"
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "status": "ok",
+                "db": true,
+                "redis": "ok"
+              }
+            },
+            {
+              "status": 500,
+              "statusText": "Internal Server Error",
+              "body": {
+                "status": "error",
+                "error": "Connection refused"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "auth-endpoints",
-      "title": "Authentication",
-      "icon": "🔐",
-      "description": "User authentication and session management",
+      "title": "Authentication Endpoints",
+      "icon": "shield-lock",
+      "description": "All authentication endpoints are prefixed with <code>/auth</code>.",
       "endpoints": [
-        { "method": "POST", "path": "/auth/signup", "description": "Create account" },
-        { "method": "POST", "path": "/auth/signin", "description": "Login, get JWT" },
-        { "method": "GET", "path": "/auth/me", "description": "Get current user" },
-        { "method": "POST", "path": "/auth/logout-all", "description": "Invalidate all sessions" },
-        { "method": "POST", "path": "/auth/bootstrap", "description": "Create profile (auto)" }
-      ]
-    },
-    {
-      "id": "profile-endpoints",
-      "title": "User Profile",
-      "icon": "👤",
-      "description": "User profile management and updates",
-      "endpoints": [
-        { "method": "GET", "path": "/users/profile", "description": "Get profile" },
-        { "method": "PUT", "path": "/users/profile-first", "description": "First-time setup (all fields required)" },
-        { "method": "PATCH", "path": "/users/profile", "description": "Update profile (partial)" }
-      ]
-    },
-    {
-      "id": "avatar-endpoints",
-      "title": "Avatar",
-      "icon": "🖼️",
-      "description": "User avatar upload and management",
-      "endpoints": [
-        { "method": "POST", "path": "/users/avatar", "description": "Upload avatar (multipart/form-data)" },
-        { "method": "GET", "path": "/users/avatar", "description": "Get avatar URLs" },
-        { "method": "DELETE", "path": "/users/avatar", "description": "Remove avatar" }
-      ]
-    },
-    {
-      "id": "preferences-endpoints",
-      "title": "Preferences & Matching",
-      "icon": "💕",
-      "description": "User preferences, matching questions and queue",
-      "endpoints": [
-        { "method": "GET", "path": "/questions", "description": "Get matching questions" },
-        { "method": "POST", "path": "/answers", "description": "Submit answers" },
-        { "method": "PUT", "path": "/answers", "description": "Update answers" },
-        { "method": "GET", "path": "/answers", "description": "Get user's answers" },
-        { "method": "GET", "path": "/answers/check-exists", "description": "Check if user has submitted answers" },
-        { "method": "GET", "path": "/preferences", "description": "Get preferences" },
-        { "method": "PUT", "path": "/preferences", "description": "Update preferences" },
-        { "method": "POST", "path": "/queue/join", "description": "Join match queue" }
-      ]
-    },
-    {
-      "id": "chat-endpoints",
-      "title": "Chat",
-      "icon": "💬",
-      "description": "Real-time messaging and conversation management",
-      "endpoints": [
-        { "method": "GET", "path": "/api/chat/conversations", "description": "List conversations" },
-        { "method": "GET", "path": "/api/chat/history", "description": "Get messages" },
-        { "method": "GET", "path": "/api/chat/count", "description": "Message count" }
-      ]
-    },
-    {
-      "id": "presence-endpoints",
-      "title": "Presence",
-      "icon": "🟢",
-      "description": "Online status tracking",
-      "endpoints": [
-        { "method": "GET", "path": "/api/presence", "description": "Check online status (query: userIds)" },
-        { "method": "GET", "path": "/api/presence/connections", "description": "All contacts' status" }
+        {
+          "method": "POST",
+          "path": "/auth/signup",
+          "description": "Create a new user account.",
+          "auth": false,
+          "requestBody": {
+            "email": "user@example.com",
+            "password": "securePassword123",
+            "displayName": "Alice Smith"
+          },
+          "validation": [
+            { "field": "email", "type": "string", "required": true, "rules": "Valid email format" },
+            { "field": "password", "type": "string", "required": true, "rules": "Minimum 8 characters" },
+            { "field": "displayName", "type": "string", "required": false, "rules": "1-100 characters if provided" }
+          ],
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.post('{{baseUrl}}/auth/signup', {\n  email: 'user@example.com',\n  password: 'securePassword123',\n  displayName: 'Alice Smith'\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nresponse = requests.post('{{baseUrl}}/auth/signup', json={\n    'email': 'user@example.com',\n    'password': 'securePassword123',\n    'displayName': 'Alice Smith'\n})\nprint(response.json())",
+            "curl": "curl -X POST {{baseUrl}}/auth/signup \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"email\": \"user@example.com\",\n    \"password\": \"securePassword123\",\n    \"displayName\": \"Alice Smith\"\n  }'"
+          },
+          "responses": [
+            {
+              "status": 201,
+              "statusText": "Created",
+              "body": {
+                "userId": "550e8400-e29b-41d4-a716-446655440000"
+              }
+            }
+          ],
+          "errors": [
+            "400 Bad Request: Validation error or email already exists",
+            "500 Internal Server Error: Server error during account creation"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/auth/signin",
+          "description": "Authenticate an existing user.",
+          "auth": false,
+          "requestBody": {
+            "email": "user@example.com",
+            "password": "securePassword123"
+          },
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.post('{{baseUrl}}/auth/signin', {\n  email: 'user@example.com',\n  password: 'securePassword123'\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nresponse = requests.post('{{baseUrl}}/auth/signin', json={\n    'email': 'user@example.com',\n    'password': 'securePassword123'\n})\nprint(response.json())",
+            "curl": "curl -X POST {{baseUrl}}/auth/signin \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"email\": \"user@example.com\",\n    \"password\": \"securePassword123\"\n  }'"
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                "refresh_token": "v1.MRjWyLHe1KIrqT...",
+                "expires_in": 3600
+              }
+            }
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me",
+          "description": "Get information about the currently authenticated user.",
+          "auth": true,
+          "authNote": "This endpoint requires a valid JWT token in the Authorization header.",
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.get('{{baseUrl}}/auth/me', {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nresponse = requests.get('{{baseUrl}}/auth/me', headers=headers)\nprint(response.json())",
+            "curl": "curl -X GET {{baseUrl}}/auth/me \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "ok": true,
+                "user": {
+                  "id": "550e8400-e29b-41d4-a716-446655440000",
+                  "email": "user@example.com"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/auth/logout-all",
+          "description": "Invalidate all active sessions for the current user across all devices.",
+          "auth": true,
+          "warning": "This will immediately invalidate all tokens for this user, including the one used to make this request.",
+          "requestBody": null,
+          "howItWorks": [
+            "Sets <code>logout_at = NOW()</code> in the database (immediate cutoff)",
+            "Calls Supabase Admin API to revoke all refresh tokens",
+            "Purges middleware cache for instant invalidation"
+          ],
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.post('{{baseUrl}}/auth/logout-all', {}, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.status); // 204",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nresponse = requests.post('{{baseUrl}}/auth/logout-all', headers=headers)\nprint(response.status_code)  # 204",
+            "curl": "curl -X POST {{baseUrl}}/auth/logout-all \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 204,
+              "statusText": "No Content",
+              "body": null,
+              "note": "Empty response body on success."
+            }
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/auth/bootstrap",
+          "description": "Explicitly create user profile (optional - normally done automatically).",
+          "auth": true,
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.post('{{baseUrl}}/auth/bootstrap', {}, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nresponse = requests.post('{{baseUrl}}/auth/bootstrap', headers=headers)\nprint(response.json())",
+            "curl": "curl -X POST {{baseUrl}}/auth/bootstrap \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "ok": true
+              }
+            }
+          ]
+        }
       ]
     },
     {
       "id": "dev-endpoints",
       "title": "Development Endpoints",
-      "icon": "🛠️",
-      "description": "Development-only endpoints (NODE_ENV=development)",
+      "icon": "code",
+      "description": "All development endpoints are prefixed with <code>/dev/auth</code> and are designed for backend testing purposes only.",
+      "danger": "These endpoints are only available when <code>NODE_ENV=development</code>. They return 404 in production.",
+      "additionalInfo": {
+        "purpose": {
+          "title": "Purpose",
+          "content": "The development token endpoints allow backend developers to obtain valid JWT access tokens without:",
+          "list": [
+            "Running the mobile app",
+            "Going through the complete OAuth flow",
+            "Manually extracting tokens from console logs",
+            "Setting up frontend environment"
+          ]
+        },
+        "security": {
+          "title": "Security",
+          "list": [
+            "<strong>Environment Protection:</strong> Endpoints return 404 in production",
+            "<strong>Service Role Access:</strong> Uses Supabase Admin API with service role key",
+            "<strong>Auto-confirmation:</strong> Test users are created with pre-confirmed emails",
+            "<strong>Test User Pattern:</strong> Default email pattern is <code>test@coner.dev</code>"
+          ]
+        }
+      },
       "endpoints": [
-        { "method": "POST", "path": "/dev/auth/token", "description": "Generate test JWT" },
-        { "method": "POST", "path": "/dev/auth/tokens/batch", "description": "Generate multiple tokens" },
-        { "method": "DELETE", "path": "/dev/auth/user/:userId", "description": "Delete test user" }
+        {
+          "method": "POST",
+          "path": "/dev/auth/token",
+          "description": "Generate a valid JWT access token for API testing.",
+          "auth": false,
+          "requestBody": {
+            "email": "developer@test.com",
+            "password": "DevPassword123!",
+            "metadata": {
+              "full_name": "Backend Developer",
+              "avatar_url": "https://example.com/avatar.png"
+            }
+          },
+          "requestNote": "All fields are optional",
+          "defaults": [
+            "<code>email</code>: <code>test@coner.dev</code>",
+            "<code>password</code>: <code>TestPassword123!</code>",
+            "<code>metadata.full_name</code>: <code>Test User</code>"
+          ],
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\n// Default token\nconst response = await axios.post('{{baseUrl}}/dev/auth/token');\nconsole.log(response.data);",
+            "python": "import requests\n\n# Default token\nresponse = requests.post('{{baseUrl}}/dev/auth/token')\nprint(response.json())",
+            "curl": "curl -X POST {{baseUrl}}/dev/auth/token"
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "success": true,
+                "data": {
+                  "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+                  "refresh_token": "v1-abc123...",
+                  "expires_in": 3600,
+                  "expires_at": 1732123456,
+                  "token_type": "bearer",
+                  "user": {
+                    "id": "550e8400-e29b-41d4-a716-446655440000",
+                    "email": "test@coner.dev",
+                    "user_metadata": {
+                      "full_name": "Test User"
+                    }
+                  }
+                },
+                "message": "Test token generated successfully"
+              }
+            }
+          ],
+          "usageExample": {
+            "title": "Using the Token",
+            "language": "bash",
+            "code": "# Get token\nTOKEN=$(curl -s -X POST {{baseUrl}}/dev/auth/token | jq -r '.data.access_token')\n\n# Use in protected endpoint\ncurl -X GET {{baseUrl}}/auth/me \\\n  -H \"Authorization: Bearer $TOKEN\""
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/dev/auth/tokens/batch",
+          "description": "Generate multiple test tokens in a single request (batch creation).",
+          "auth": false,
+          "requestBody": {
+            "count": 5
+          },
+          "validation": [
+            { "field": "count", "type": "number", "required": false, "rules": "Default: 5, Maximum: 20" }
+          ],
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.post('{{baseUrl}}/dev/auth/tokens/batch', {\n  count: 3\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nresponse = requests.post('{{baseUrl}}/dev/auth/tokens/batch', json={\n    'count': 3\n})\nprint(response.json())",
+            "curl": "curl -X POST {{baseUrl}}/dev/auth/tokens/batch \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"count\": 3}'"
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "success": true,
+                "data": [
+                  {
+                    "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+                    "user": { "email": "test1@coner.dev" }
+                  },
+                  {
+                    "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+                    "user": { "email": "test2@coner.dev" }
+                  }
+                ],
+                "message": "Generated 2 test tokens"
+              }
+            }
+          ]
+        },
+        {
+          "method": "DELETE",
+          "path": "/dev/auth/user/:userId",
+          "description": "Delete a test user for cleanup purposes.",
+          "auth": false,
+          "pathParams": [
+            { "name": "userId", "type": "uuid", "description": "The Supabase user ID to delete" }
+          ],
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst userId = '550e8400-e29b-41d4-a716-446655440000';\nconst response = await axios.delete(`{{baseUrl}}/dev/auth/user/${userId}`);\nconsole.log(response.data);",
+            "python": "import requests\n\nuser_id = '550e8400-e29b-41d4-a716-446655440000'\nresponse = requests.delete(f'{{baseUrl}}/dev/auth/user/{user_id}')\nprint(response.json())",
+            "curl": "curl -X DELETE {{baseUrl}}/dev/auth/user/550e8400-e29b-41d4-a716-446655440000"
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "success": true,
+                "message": "Test user deleted successfully"
+              }
+            }
+          ]
+        }
+      ],
+      "workflow": {
+        "title": "Development Workflow",
+        "type": "info",
+        "content": "<strong>Typical Usage Pattern:</strong>",
+        "steps": [
+          "Start development server: <code>cd src && npm run dev</code>",
+          "Generate test token: <code>POST /dev/auth/token</code>",
+          "Use token to test protected endpoints",
+          "Clean up test users when done (optional)"
+        ]
+      }
+    },
+    {
+      "id": "profile-endpoints",
+      "title": "User Profile Endpoints",
+      "icon": "user",
+      "description": "All user profile endpoints are prefixed with <code>/users</code> and require authentication.",
+      "info": "<strong>Middleware Chain:</strong> <code>requireAuth</code> → <code>ensureProfile</code> → route handler",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/users/profile",
+          "description": "Get detailed profile information for the authenticated user.",
+          "auth": true,
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.get('{{baseUrl}}/users/profile', {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nresponse = requests.get('{{baseUrl}}/users/profile', headers=headers)\nprint(response.json())",
+            "curl": "curl -X GET {{baseUrl}}/users/profile \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "full_name": "Alice Smith",
+                "dob": "1995-03-15",
+                "sex": "female",
+                "phone_number": "1234567890",
+                "address": "123 Main St, San Francisco, CA 94102",
+                "school": "Stanford University",
+                "major": "Computer Science"
+              }
+            }
+          ]
+        },
+        {
+          "method": "PUT",
+          "path": "/users/profile-first",
+          "description": "Complete the profile with all required information (first-time setup only).",
+          "auth": true,
+          "warning": "This endpoint can only be called <strong>once</strong> per user. All fields are required for first-time setup.",
+          "requestBody": {
+            "full_name": "Alice Smith",
+            "dob": "1995-03-15",
+            "sex": "female",
+            "phone_number": "1234567890",
+            "address": "123 Main St, San Francisco, CA 94102",
+            "school": "Stanford University",
+            "major": "Computer Science"
+          },
+          "validation": [
+            { "field": "full_name", "type": "string", "required": true, "rules": "1-255 characters" },
+            { "field": "dob", "type": "date", "required": true, "rules": "Age 0-150 years" },
+            { "field": "sex", "type": "enum", "required": true, "rules": "\"male\", \"female\", or \"other\"" },
+            { "field": "phone_number", "type": "string", "required": true, "rules": "8-15 digits only" },
+            { "field": "address", "type": "string", "required": true, "rules": "1-500 characters" },
+            { "field": "school", "type": "string", "required": true, "rules": "1-255 characters" },
+            { "field": "major", "type": "string", "required": true, "rules": "1-255 characters" }
+          ],
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.put('{{baseUrl}}/users/profile-first', {\n  full_name: 'Alice Smith',\n  dob: '1995-03-15',\n  sex: 'female',\n  phone_number: '1234567890',\n  address: '123 Main St, San Francisco, CA 94102',\n  school: 'Stanford University',\n  major: 'Computer Science'\n}, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\ndata = {\n    'full_name': 'Alice Smith',\n    'dob': '1995-03-15',\n    'sex': 'female',\n    'phone_number': '1234567890',\n    'address': '123 Main St, San Francisco, CA 94102',\n    'school': 'Stanford University',\n    'major': 'Computer Science'\n}\nresponse = requests.put('{{baseUrl}}/users/profile-first', json=data, headers=headers)\nprint(response.json())",
+            "curl": "curl -X PUT {{baseUrl}}/users/profile-first \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"full_name\": \"Alice Smith\",\n    \"dob\": \"1995-03-15\",\n    \"sex\": \"female\",\n    \"phone_number\": \"1234567890\",\n    \"address\": \"123 Main St, San Francisco, CA 94102\",\n    \"school\": \"Stanford University\",\n    \"major\": \"Computer Science\"\n  }'"
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "full_name": "Alice Smith",
+                "dob": "1995-03-15",
+                "sex": "female",
+                "phone_number": "1234567890",
+                "address": "123 Main St, San Francisco, CA 94102",
+                "school": "Stanford University",
+                "major": "Computer Science"
+              }
+            }
+          ]
+        },
+        {
+          "method": "PATCH",
+          "path": "/users/profile",
+          "description": "Update profile fields after first-time setup (partial updates allowed).",
+          "auth": true,
+          "danger": "<code>full_name</code> and <code>sex</code> cannot be changed after first-time setup.",
+          "requestBody": {
+            "phone_number": "9876543210",
+            "address": "456 Oak Ave, New York, NY 10001",
+            "school": "MIT"
+          },
+          "notes": [
+            "All fields are optional - only include fields you want to update",
+            "Omitted fields will retain their current values",
+            "Attempting to update locked fields will result in a <code>400 Bad Request</code> error"
+          ],
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.patch('{{baseUrl}}/users/profile', {\n  phone_number: '9876543210',\n  address: '456 Oak Ave, New York, NY 10001',\n  school: 'MIT'\n}, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\ndata = {\n    'phone_number': '9876543210',\n    'address': '456 Oak Ave, New York, NY 10001',\n    'school': 'MIT'\n}\nresponse = requests.patch('{{baseUrl}}/users/profile', json=data, headers=headers)\nprint(response.json())",
+            "curl": "curl -X PATCH {{baseUrl}}/users/profile \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"phone_number\": \"9876543210\",\n    \"address\": \"456 Oak Ave, New York, NY 10001\",\n    \"school\": \"MIT\"\n  }'"
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "full_name": "Alice Smith",
+                "dob": "1995-03-15",
+                "sex": "female",
+                "phone_number": "9876543210",
+                "address": "456 Oak Ave, New York, NY 10001",
+                "school": "MIT",
+                "major": "Computer Science"
+              }
+            }
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/users/me",
+          "description": "Get basic profile information (legacy endpoint).",
+          "auth": true,
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.get('{{baseUrl}}/users/me', {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nresponse = requests.get('{{baseUrl}}/users/me', headers=headers)\nprint(response.json())",
+            "curl": "curl -X GET {{baseUrl}}/users/me \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "id": "550e8400-e29b-41d4-a716-446655440000",
+                "display_name": "Alice Smith",
+                "avatar_url": "https://cdn.example.com/avatar.png",
+                "email": "user@example.com",
+                "profession": "Software Engineer",
+                "company": "Tech Corp",
+                "bio": "Passionate about building great products",
+                "skills": ["JavaScript", "React", "Node.js"],
+                "work_style": "collaborative",
+                "years_experience": 5,
+                "linkedin_url": "https://linkedin.com/in/alice",
+                "portfolio_url": "https://alice.dev",
+                "created_at": "2025-01-15T10:30:00Z",
+                "updated_at": "2025-01-20T14:22:00Z",
+                "last_seen_at": "2025-01-25T09:15:00Z",
+                "is_deleted": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "avatar-endpoints",
+      "title": "Avatar Endpoints",
+      "icon": "image",
+      "description": "All avatar endpoints are prefixed with <code>/users</code> and require authentication.",
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/users/avatar",
+          "description": "Upload a new avatar image.",
+          "auth": true,
+          "contentType": "multipart/form-data",
+          "requestBody": {
+            "_formField": "avatar",
+            "_note": "File upload - JPEG, PNG, or WebP, max 5MB, min 64x64px"
+          },
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\nconst FormData = require('form-data');\nconst fs = require('fs');\n\nconst form = new FormData();\nform.append('avatar', fs.createReadStream('./avatar.jpg'));\n\nconst response = await axios.post('{{baseUrl}}/users/avatar', form, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN',\n    ...form.getHeaders()\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nfiles = {'avatar': open('avatar.jpg', 'rb')}\nresponse = requests.post('{{baseUrl}}/users/avatar', headers=headers, files=files)\nprint(response.json())",
+            "curl": "curl -X POST {{baseUrl}}/users/avatar \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  -F \"avatar=@/path/to/avatar.jpg\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "message": "Avatar uploaded successfully",
+                "avatarUrl": "https://pub-xxx.r2.dev/avatars/user-123/128.webp?v=1732768800000",
+                "version": 1732768800000,
+                "sizes": {
+                  "32": "https://pub-xxx.r2.dev/avatars/user-123/32.webp?v=1732768800000",
+                  "64": "https://pub-xxx.r2.dev/avatars/user-123/64.webp?v=1732768800000",
+                  "128": "https://pub-xxx.r2.dev/avatars/user-123/128.webp?v=1732768800000",
+                  "256": "https://pub-xxx.r2.dev/avatars/user-123/256.webp?v=1732768800000",
+                  "512": "https://pub-xxx.r2.dev/avatars/user-123/512.webp?v=1732768800000"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/users/avatar",
+          "description": "Get avatar URLs for the authenticated user.",
+          "auth": true,
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.get('{{baseUrl}}/users/avatar', {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nresponse = requests.get('{{baseUrl}}/users/avatar', headers=headers)\nprint(response.json())",
+            "curl": "curl -X GET {{baseUrl}}/users/avatar \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "description": "When user has an avatar",
+              "body": {
+                "hasAvatar": true,
+                "urls": {
+                  "32": "https://pub-xxx.r2.dev/avatars/user-123/32.webp?v=...",
+                  "64": "https://pub-xxx.r2.dev/avatars/user-123/64.webp?v=...",
+                  "128": "https://pub-xxx.r2.dev/avatars/user-123/128.webp?v=...",
+                  "256": "https://pub-xxx.r2.dev/avatars/user-123/256.webp?v=...",
+                  "512": "https://pub-xxx.r2.dev/avatars/user-123/512.webp?v=..."
+                }
+              }
+            },
+            {
+              "status": 200,
+              "statusText": "OK",
+              "description": "When user has no avatar",
+              "body": {
+                "hasAvatar": false,
+                "urls": null
+              }
+            }
+          ]
+        },
+        {
+          "method": "DELETE",
+          "path": "/users/avatar",
+          "description": "Remove the authenticated user's avatar.",
+          "auth": true,
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.delete('{{baseUrl}}/users/avatar', {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nresponse = requests.delete('{{baseUrl}}/users/avatar', headers=headers)\nprint(response.json())",
+            "curl": "curl -X DELETE {{baseUrl}}/users/avatar \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "message": "Avatar deleted successfully"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "question-endpoints",
+      "title": "Question Endpoints",
+      "icon": "question-mark",
+      "description": "Endpoints for retrieving matching questions.",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/questions",
+          "description": "Retrieve all active matching questions in display order.",
+          "auth": true,
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.get('{{baseUrl}}/questions', {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nresponse = requests.get('{{baseUrl}}/questions', headers=headers)\nprint(response.json())",
+            "curl": "curl -X GET {{baseUrl}}/questions \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "message": "Get questions successfully",
+                "data": [
+                  {
+                    "id": "550e8400-e29b-41d4-a716-446655440000",
+                    "question_text": "What are your interests?",
+                    "options": [
+                      { "value": "sports", "label": "Sports" },
+                      { "value": "music", "label": "Music" },
+                      { "value": "travel", "label": "Travel" }
+                    ],
+                    "display_order": 1
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "user-answer-endpoints",
+      "title": "User Answer Endpoints",
+      "icon": "edit",
+      "description": "All user answer endpoints are prefixed with <code>/answers</code> and require authentication.",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/answers",
+          "description": "Retrieve the authenticated user's answer.",
+          "auth": true,
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.get('{{baseUrl}}/answers', {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nresponse = requests.get('{{baseUrl}}/answers', headers=headers)\nprint(response.json())",
+            "curl": "curl -X GET {{baseUrl}}/answers \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "message": "Your answer fetched",
+                "data": {
+                  "id": "550e8400-e29b-41d4-a716-446655440000",
+                  "user_id": "550e8400-e29b-41d4-a716-446655440000",
+                  "question_1": 1,
+                  "question_2": 3,
+                  "question_3": [1, 2],
+                  "question_4": [1, 2, 3],
+                  "created_at": "2025-11-27T14:07:25.713Z",
+                  "updated_at": "2025-11-27T14:07:25.713Z"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/answers",
+          "description": "Submit a new answer for the authenticated user. Each user can only submit once.",
+          "auth": true,
+          "requestBody": {
+            "question_1": 1,
+            "question_2": 2,
+            "question_3": [1, 2],
+            "question_4": [1, 2, 3]
+          },
+          "validation": [
+            { "field": "question_1", "type": "number", "required": true, "rules": "1 or 2" },
+            { "field": "question_2", "type": "number", "required": true, "rules": "1, 2, or 3" },
+            { "field": "question_3", "type": "array", "required": true, "rules": "[1], [2], or [1,2]" },
+            { "field": "question_4", "type": "array", "required": true, "rules": "[1], [2], [3], or [1,2,3]" }
+          ],
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.post('{{baseUrl}}/answers', {\n  question_1: 1,\n  question_2: 2,\n  question_3: [1, 2],\n  question_4: [1, 2, 3]\n}, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\ndata = {\n    'question_1': 1,\n    'question_2': 2,\n    'question_3': [1, 2],\n    'question_4': [1, 2, 3]\n}\nresponse = requests.post('{{baseUrl}}/answers', json=data, headers=headers)\nprint(response.json())",
+            "curl": "curl -X POST {{baseUrl}}/answers \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"question_1\": 1,\n    \"question_2\": 2,\n    \"question_3\": [1, 2],\n    \"question_4\": [1, 2, 3]\n  }'"
+          },
+          "responses": [
+            {
+              "status": 201,
+              "statusText": "Created",
+              "body": {
+                "message": "Your answer created",
+                "data": {
+                  "id": "550e8400-e29b-41d4-a716-446655440000",
+                  "user_id": "550e8400-e29b-41d4-a716-446655440000",
+                  "question_1": 1,
+                  "question_2": 2,
+                  "question_3": [1, 2],
+                  "question_4": [1, 2, 3],
+                  "created_at": "2025-11-27T14:07:25.713Z",
+                  "updated_at": "2025-11-27T14:07:25.713Z"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "method": "PUT",
+          "path": "/answers",
+          "description": "Update the authenticated user's existing answer. Supports partial updates.",
+          "auth": true,
+          "requestBody": {
+            "question_1": 2,
+            "question_2": 1
+          },
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.put('{{baseUrl}}/answers', {\n  question_1: 2,\n  question_2: 1\n}, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\ndata = {\n    'question_1': 2,\n    'question_2': 1\n}\nresponse = requests.put('{{baseUrl}}/answers', json=data, headers=headers)\nprint(response.json())",
+            "curl": "curl -X PUT {{baseUrl}}/answers \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"question_1\": 2,\n    \"question_2\": 1\n  }'"
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "message": "Your answer updated",
+                "data": {
+                  "id": "550e8400-e29b-41d4-a716-446655440000",
+                  "user_id": "550e8400-e29b-41d4-a716-446655440000",
+                  "question_1": 2,
+                  "question_2": 1,
+                  "question_3": [1, 2],
+                  "question_4": [1, 2, 3],
+                  "created_at": "2025-11-27T14:07:25.713Z",
+                  "updated_at": "2025-11-27T14:10:00.000Z"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/answers/check-exists",
+          "description": "Check if the authenticated user has already submitted answers.",
+          "auth": true,
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.get('{{baseUrl}}/answers/check-exists', {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nresponse = requests.get('{{baseUrl}}/answers/check-exists', headers=headers)\nprint(response.json())",
+            "curl": "curl -X GET {{baseUrl}}/answers/check-exists \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "exists": true
+              }
+            },
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "exists": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "preferences-endpoints",
+      "title": "Preferences Endpoints",
+      "icon": "settings",
+      "description": "Endpoints for managing user matching preferences.",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/preferences",
+          "description": "Get the authenticated user's matching preferences.",
+          "auth": true,
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.get('{{baseUrl}}/preferences', {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nresponse = requests.get('{{baseUrl}}/preferences', headers=headers)\nprint(response.json())",
+            "curl": "curl -X GET {{baseUrl}}/preferences \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "preferences": {
+                  "age_range": { "min": 18, "max": 35 },
+                  "distance_km": 50,
+                  "interests": ["technology", "music"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "method": "PUT",
+          "path": "/preferences",
+          "description": "Update the authenticated user's matching preferences.",
+          "auth": true,
+          "requestBody": {
+            "age_range": { "min": 20, "max": 30 },
+            "distance_km": 25,
+            "interests": ["sports", "travel"]
+          },
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.put('{{baseUrl}}/preferences', {\n  age_range: { min: 20, max: 30 },\n  distance_km: 25,\n  interests: ['sports', 'travel']\n}, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\ndata = {\n    'age_range': {'min': 20, 'max': 30},\n    'distance_km': 25,\n    'interests': ['sports', 'travel']\n}\nresponse = requests.put('{{baseUrl}}/preferences', json=data, headers=headers)\nprint(response.json())",
+            "curl": "curl -X PUT {{baseUrl}}/preferences \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"age_range\": {\"min\": 20, \"max\": 30},\n    \"distance_km\": 25,\n    \"interests\": [\"sports\", \"travel\"]\n  }'"
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "message": "Preferences updated successfully",
+                "preferences": {
+                  "age_range": { "min": 20, "max": 30 },
+                  "distance_km": 25,
+                  "interests": ["sports", "travel"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "matching-endpoints",
+      "title": "Matching Queue Endpoints",
+      "icon": "heart",
+      "description": "Endpoints for joining the matching queue.",
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/queue/join",
+          "description": "Join the matching queue (\"Find now\" or \"Match later\").",
+          "auth": true,
+          "requestBody": {
+            "location": {
+              "lat": 10.779783,
+              "lng": 106.699018,
+              "placeId": "coffee-123"
+            }
+          },
+          "requestNote": "For \"Match later\", include timeWindow object",
+          "alternateRequestBody": {
+            "location": {
+              "lat": 10.779783,
+              "lng": 106.699018,
+              "placeId": "coffee-123"
+            },
+            "timeWindow": {
+              "start": "2025-11-14T14:00:00Z",
+              "end": "2025-11-14T16:00:00Z"
+            }
+          },
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\n// \"Find now\" example\nconst response = await axios.post('{{baseUrl}}/queue/join', {\n  location: {\n    lat: 10.779783,\n    lng: 106.699018,\n    placeId: 'coffee-123'\n  }\n}, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\n# \"Match later\" example\ndata = {\n    'location': {\n        'lat': 10.779783,\n        'lng': 106.699018,\n        'placeId': 'coffee-123'\n    },\n    'timeWindow': {\n        'start': '2025-11-14T14:00:00Z',\n        'end': '2025-11-14T16:00:00Z'\n    }\n}\nresponse = requests.post('{{baseUrl}}/queue/join', json=data, headers=headers)\nprint(response.json())",
+            "curl": "curl -X POST {{baseUrl}}/queue/join \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"location\": {\n      \"lat\": 10.779783,\n      \"lng\": 106.699018,\n      \"placeId\": \"coffee-123\"\n    }\n  }'"
+          },
+          "responses": [
+            {
+              "status": 201,
+              "statusText": "Created",
+              "body": {
+                "success": true,
+                "queueEntry": {
+                  "queueId": "eab71b1c-cb88-4736-9909-ef99e9abb61d",
+                  "position": 2,
+                  "joinedAt": "2025-11-14T12:09:14.481Z",
+                  "timeWindow": {
+                    "start": "2025-11-14T12:14:14.481Z",
+                    "end": "2025-11-14T18:09:14.481Z"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chat-endpoints",
+      "title": "Chat Endpoints",
+      "icon": "message",
+      "description": "All chat endpoints are prefixed with <code>/api/chat</code> and require authentication.",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/api/chat/conversations",
+          "description": "List all conversations for the authenticated user.",
+          "auth": true,
+          "queryParams": [
+            { "name": "limit", "type": "number", "required": false, "default": 20, "description": "Maximum number of conversations to return" },
+            { "name": "offset", "type": "number", "required": false, "default": 0, "description": "Number of conversations to skip" }
+          ],
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.get('{{baseUrl}}/api/chat/conversations', {\n  params: { limit: 20, offset: 0 },\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nparams = {'limit': 20, 'offset': 0}\nresponse = requests.get('{{baseUrl}}/api/chat/conversations', headers=headers, params=params)\nprint(response.json())",
+            "curl": "curl -X GET '{{baseUrl}}/api/chat/conversations?limit=20&offset=0' \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "data": [
+                  {
+                    "connectionId": "550e8400-e29b-41d4-a716-446655440000",
+                    "otherUser": {
+                      "id": "550e8400-e29b-41d4-a716-446655440001",
+                      "displayName": "John",
+                      "avatarUrl": "https://cdn.example.com/avatar.png"
+                    },
+                    "lastMessage": {
+                      "content": "Hey!",
+                      "sentAt": "2025-01-20T10:00:00Z",
+                      "isOwn": false
+                    },
+                    "unreadCount": 3
+                  }
+                ],
+                "pagination": {
+                  "total": 45,
+                  "hasMore": true
+                }
+              }
+            }
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/history",
+          "description": "Get message history for a specific conversation.",
+          "auth": true,
+          "queryParams": [
+            { "name": "connectionId", "type": "uuid", "required": true, "description": "The connection/conversation ID" },
+            { "name": "limit", "type": "number", "required": false, "default": 50, "description": "Maximum number of messages to return" },
+            { "name": "before", "type": "datetime", "required": false, "description": "Get messages before this timestamp" }
+          ],
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.get('{{baseUrl}}/api/chat/history', {\n  params: {\n    connectionId: '550e8400-e29b-41d4-a716-446655440000',\n    limit: 50\n  },\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nparams = {\n    'connectionId': '550e8400-e29b-41d4-a716-446655440000',\n    'limit': 50\n}\nresponse = requests.get('{{baseUrl}}/api/chat/history', headers=headers, params=params)\nprint(response.json())",
+            "curl": "curl -X GET '{{baseUrl}}/api/chat/history?connectionId=uuid&limit=50' \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "messages": [
+                  {
+                    "id": 1,
+                    "senderId": "550e8400-e29b-41d4-a716-446655440000",
+                    "content": "Hello",
+                    "createdAt": "2025-01-20T10:00:00Z"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/api/chat/count",
+          "description": "Get total message count for a conversation.",
+          "auth": true,
+          "queryParams": [
+            { "name": "connectionId", "type": "uuid", "required": true, "description": "The connection/conversation ID" }
+          ],
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.get('{{baseUrl}}/api/chat/count', {\n  params: { connectionId: '550e8400-e29b-41d4-a716-446655440000' },\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nparams = {'connectionId': '550e8400-e29b-41d4-a716-446655440000'}\nresponse = requests.get('{{baseUrl}}/api/chat/count', headers=headers, params=params)\nprint(response.json())",
+            "curl": "curl -X GET '{{baseUrl}}/api/chat/count?connectionId=uuid' \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "count": 150
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "presence-endpoints",
+      "title": "Presence Endpoints",
+      "icon": "wifi",
+      "description": "Endpoints for checking user online status.",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/api/presence",
+          "description": "Check online status for specific users.",
+          "auth": true,
+          "queryParams": [
+            { "name": "userIds", "type": "string", "required": true, "description": "Comma-separated list of user IDs" }
+          ],
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.get('{{baseUrl}}/api/presence', {\n  params: { userIds: 'uuid1,uuid2' },\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nparams = {'userIds': 'uuid1,uuid2'}\nresponse = requests.get('{{baseUrl}}/api/presence', headers=headers, params=params)\nprint(response.json())",
+            "curl": "curl -X GET '{{baseUrl}}/api/presence?userIds=uuid1,uuid2' \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "presence": {
+                  "uuid1": true,
+                  "uuid2": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/api/presence/connections",
+          "description": "Get online status for all of the authenticated user's connections.",
+          "auth": true,
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.get('{{baseUrl}}/api/presence/connections', {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nresponse = requests.get('{{baseUrl}}/api/presence/connections', headers=headers)\nprint(response.json())",
+            "curl": "curl -X GET {{baseUrl}}/api/presence/connections \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "presence": {
+                  "user-id-1": true,
+                  "user-id-2": false
+                }
+              }
+            }
+          ]
+        }
       ]
     },
     {
       "id": "errors",
       "title": "Error Handling",
-      "icon": "⚠️",
-      "description": "Error response formats and status codes",
+      "icon": "alert-triangle",
+      "description": "",
+      "isErrorSection": true,
+      "errorFormat": {
+        "title": "Error Response Format",
+        "description": "All errors follow a consistent JSON format:",
+        "example": {
+          "error": "Error message here"
+        }
+      },
+      "validationErrors": {
+        "title": "Validation Errors",
+        "description": "Zod validation errors include detailed field-level information:",
+        "example": {
+          "error": "ValidationError",
+          "details": {
+            "email": ["Please provide a valid email address"],
+            "password": ["Password must be at least 8 characters long"]
+          }
+        }
+      },
       "httpCodes": [
-        { "code": 200, "meaning": "Success" },
-        { "code": 201, "meaning": "Created" },
-        { "code": 400, "meaning": "Validation error" },
-        { "code": 401, "meaning": "Unauthorized" },
-        { "code": 403, "meaning": "Forbidden" },
-        { "code": 404, "meaning": "Not found" },
-        { "code": 409, "meaning": "Conflict (duplicate)" },
-        { "code": 500, "meaning": "Server error" }
+        { "code": 200, "meaning": "OK", "description": "Successful GET/PATCH request" },
+        { "code": 201, "meaning": "Created", "description": "Successful POST request (resource created)" },
+        { "code": 204, "meaning": "No Content", "description": "Successful DELETE or logout request" },
+        { "code": 400, "meaning": "Bad Request", "description": "Validation error or invalid request" },
+        { "code": 401, "meaning": "Unauthorized", "description": "Missing or invalid JWT token" },
+        { "code": 403, "meaning": "Forbidden", "description": "Insufficient permissions" },
+        { "code": 404, "meaning": "Not Found", "description": "Resource not found" },
+        { "code": 409, "meaning": "Conflict", "description": "Duplicate resource (e.g., email already exists)" },
+        { "code": 500, "meaning": "Internal Server Error", "description": "Server-side error" }
+      ],
+      "commonErrors": [
+        {
+          "type": "danger",
+          "title": "Authentication Error:",
+          "example": "{ \"error\": \"Unauthorized: JWT token missing or invalid\" }",
+          "solution": "Ensure valid JWT token is included in Authorization header."
+        },
+        {
+          "type": "warning",
+          "title": "Profile Already Initialized:",
+          "example": "{ \"error\": \"Profile already initialized\" }",
+          "solution": "Use PATCH /users/profile for updates instead."
+        },
+        {
+          "type": "warning",
+          "title": "Locked Field Update:",
+          "example": "{ \"error\": \"ValidationError\", \"details\": { \"full_name\": [\"Cannot update full name after first completion\"] } }",
+          "solution": "Remove locked fields (full_name, sex) from update request."
+        }
       ]
     }
   ]
