@@ -2,69 +2,154 @@
   "environment": "development",
   "versions": [
     {
-      "version": "0.6.0-dev",
-      "date": "2025-11-03",
+      "version": "Unreleased",
+      "date": "2025-11-29",
       "added": [
+        "User Preference Module - PUT/GET/DELETE /preferences endpoints",
+        "GET /preferences/check-completed - Check if user completed preference setup",
+        "Matching Questions System - GET /questions for active matching questions",
+        "User Answer System - POST/PUT/GET /answers for questionnaire responses",
+        "GET /answers/check-exists - Check if user has submitted answers",
+        "Match Queue System - POST /queue/join with Match Now and Match Later modes",
+        "Match Sessions - Session states: pending/confirm/declined/expired",
+        "Real-Time Chat System - Socket.io with JWT auth, Redis adapter, RabbitMQ worker",
+        "Chat HTTP Endpoints - GET /api/chat/history, /api/chat/count, /api/chat/conversations",
+        "Presence Endpoints - GET /api/presence, /api/presence/connections",
+        "Avatar Management - POST/GET/DELETE /users/avatar with multi-size WebP support",
+        "Development Token Endpoints - POST /dev/auth/token, /dev/auth/tokens/batch",
+        "DELETE /dev/auth/user/:userId - Delete test users for cleanup",
+        "Database migrations for matching (match_queues, match_sessions with PostGIS)",
+        "Shared logging utility and AppError class"
+      ],
+      "changed": [
+        "User Answer Schema Restructured - Migrated from enum-based to numbered question format",
+        "Replaced dating_style/match_preference/user_field/purpose with question_1-4 fields",
+        "Arrays in answer responses are automatically sorted ascending",
+        "Production Docker config updated with Redis and RabbitMQ services"
+      ],
+      "deprecated": [],
+      "removed": [
+        "Enum mapping layer (datingStyleMap, purposeMap, matchPreference mappings)"
+      ],
+      "fixed": [
+        "Profile Creation NOT NULL Constraint - Added default empty string to full_name column",
+        "JWT Token Verification - Fixed incorrect JWKS URL format in production",
+        "Database Connection Issues - Fixed IPv6 connectivity errors with Supabase"
+      ],
+      "security": []
+    },
+    {
+      "version": "0.5.0",
+      "date": "2025-10-30",
+      "added": [
+        "Extended user profile fields (full_name, dob, sex, phone_number, address, school, major)",
         "GET /users/profile-updated - Check if user has completed profile setup",
         "POST /users/profile-updated - Set profile completion status flag",
         "Database field: has_updated_profile for tracking onboarding completion",
-        "Frontend: First-time user profile creation flow with validation",
-        "Frontend: University selection with fuzzy search (fuse.js)",
-        "Frontend: Address dropdown with Vietnamese districts data",
-        "Frontend: Major selection dropdown menu",
-        "Frontend: Google OAuth integration guide for Expo and Supabase",
-        "WebSocket support for real-time chat (WIP)",
-        "POST /matching/preferences - User matching preferences",
-        "GET /matching/suggestions - Get match suggestions",
-        "File upload endpoint for avatar images",
-        "Email verification flow"
+        "Swagger API Documentation at /api-docs endpoint",
+        "OpenAPI spec available at /api-docs.json"
       ],
       "changed": [
-        "Frontend: Enhanced UX flow for first-time profile creation",
-        "Frontend: Improved keyboard dismiss functionality for form inputs",
-        "Frontend: Better spacing and dropdown menu positioning",
-        "Backend: Extended UserProfileRepository interface with profile status methods",
-        "Backend: Profile service layer with isProfileUpdated and setProfileUpdatedStatus functions",
-        "Migrated to new database schema with better indexing",
-        "Refactored profile module to use DDD architecture",
-        "Updated Zod schemas for stricter validation"
+        "Profile repository interface - Extended with isProfileUpdated and setProfileUpdatedStatus methods",
+        "Profile service layer with improved error handling",
+        "Database migrations 03_add_user_profile_details.sql and 04_add_have_update.sql"
       ],
-      "deprecated": [
-        "PUT /users/me - Replaced by PATCH /users/profile"
-      ],
+      "deprecated": [],
       "removed": [],
-      "fixed": [
-        "Frontend: Address text input field sensitivity issues",
-        "Frontend: Keyboard staying too close to text input field",
-        "Frontend: Dropdown menus being hidden underneath other elements",
-        "Frontend: Auto-close keyboard when tapping outside input fields",
-        "Frontend: Text selection on double-tap in input fields",
-        "Frontend: Address field updates after clearing text",
-        "Profile creation race condition",
-        "JWT token refresh timing issues",
-        "Database connection pool exhaustion"
-      ],
+      "fixed": [],
       "security": [
-        "Implemented Content Security Policy headers",
-        "Added CORS whitelist configuration",
-        "Enhanced password hashing with Argon2"
+        "Phone number uniqueness enforced only for active (non-deleted) users",
+        "Personal information changes automatically update timestamp for audit trail"
       ]
     },
     {
-      "version": "0.5.0-beta",
-      "date": "2025-10-28",
+      "version": "0.4.0",
+      "date": "2025-10-25",
       "added": [
-        "Rate limiting middleware",
-        "Request validation caching"
+        "Logout-all functionality - POST /auth/logout-all endpoint",
+        "logout_at column in user_profiles table for immediate token cutoff",
+        "Auto-profile creation - ensureProfile middleware",
+        "Enhanced requireAuth middleware with token cutoff validation",
+        "UserProfileRepository interface with port/adapter pattern"
       ],
       "changed": [
-        "Refactored authentication middleware"
+        "Profile field updates restructured with better validation",
+        "Removed legacy database config in favor of centralized configuration"
+      ],
+      "deprecated": [],
+      "removed": [
+        "Redundant code in profiles.repo.ts (95+ lines)"
+      ],
+      "fixed": [
+        "Profile repository query efficiency improvements"
+      ],
+      "security": [
+        "Enhanced logout mechanism prevents zombie sessions",
+        "Immediate access token invalidation via database timestamp check",
+        "Server-side refresh token revocation via Supabase Admin API"
+      ]
+    },
+    {
+      "version": "0.3.0",
+      "date": "2025-10-19",
+      "added": [
+        "Comprehensive Product Requirements Document (PRD.md)",
+        "Project changelog (CHANGELOG.md)",
+        "Documentation directory structure"
+      ],
+      "changed": [
+        "Updated README.md with clearer architecture explanation"
+      ],
+      "deprecated": [],
+      "removed": [],
+      "fixed": [],
+      "security": []
+    },
+    {
+      "version": "0.2.0",
+      "date": "2025-10-15",
+      "added": [
+        "Profile update API endpoints",
+        "PATCH /users/me-first for first-time profile completion",
+        "PATCH /users/me for partial profile updates",
+        "Profile service business logic",
+        "Validation schemas for profile updates"
+      ],
+      "changed": [
+        "BREAKING: Email and display name changes now blocked in profile update endpoints"
       ],
       "deprecated": [],
       "removed": [],
       "fixed": [
-        "Redis connection pool issues"
+        "Profile update now correctly emits UserProfileUpdatedEvent",
+        "Repository updateProfile function returns updated profile with all fields"
       ],
+      "security": [
+        "Added protection against profile re-initialization attempts",
+        "Restricted email changes pending verification flow implementation"
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "date": "2025-10-01",
+      "added": [
+        "Express.js application setup with TypeScript",
+        "Environment configuration system with Zod validation",
+        "PostgreSQL connection pooling",
+        "Redis client setup with ioredis",
+        "Database migration system",
+        "Global error handling middleware",
+        "Supabase Auth integration (signup, signin, JWT)",
+        "Auth API endpoints (POST /auth/signup, /auth/signin, GET /auth/me)",
+        "requireAuth middleware with JWKS verification",
+        "User profile module with DDD structure",
+        "Custom EventBus implementation",
+        "Complete PostgreSQL schema (user_profiles, user_preferences, connections, user_blocks, user_reports, user_identities)"
+      ],
+      "changed": [],
+      "deprecated": [],
+      "removed": [],
+      "fixed": [],
       "security": []
     }
   ]

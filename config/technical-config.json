@@ -14,25 +14,60 @@
       "id": "naming",
       "title": "Naming Conventions",
       "icon": "✍️",
-      "description": "Field naming and URL structure standards"
+      "description": "Field naming and URL structure standards",
+      "rules": [
+        "Always use snake_case for field names (user_id, display_name, created_at)",
+        "Never use camelCase (userId, displayName, createdAt)"
+      ]
     },
     {
       "id": "http-codes",
       "title": "HTTP Response Codes",
       "icon": "🔢",
-      "description": "Standard HTTP status code usage"
+      "description": "Standard HTTP status code usage",
+      "codes": [
+        { "code": 200, "meaning": "Success (GET/PUT/PATCH)" },
+        { "code": 201, "meaning": "Created (POST)" },
+        { "code": 204, "meaning": "No Content (DELETE)" },
+        { "code": 400, "meaning": "Validation error" },
+        { "code": 401, "meaning": "Unauthorized - Missing/invalid token" },
+        { "code": 403, "meaning": "Forbidden" },
+        { "code": 404, "meaning": "Not found" },
+        { "code": 409, "meaning": "Conflict (duplicate)" },
+        { "code": 500, "meaning": "Server error" }
+      ]
     },
     {
-      "id": "versioning",
-      "title": "Versioning",
-      "icon": "🔄",
-      "description": "API versioning policy and breaking changes"
+      "id": "error-format",
+      "title": "Error Format",
+      "icon": "⚠️",
+      "description": "Standard error response structure",
+      "format": {
+        "validation": "{ \"error\": \"ValidationError\", \"details\": { \"field_name\": [\"Error description\"] } }",
+        "auth": "{ \"error\": \"Unauthorized: JWT token missing or invalid\" }"
+      }
     },
     {
       "id": "authentication",
       "title": "Authentication",
       "icon": "🔑",
-      "description": "Authentication flow and JWT token management"
+      "description": "Authentication flow and JWT token management",
+      "details": {
+        "header": "Authorization: Bearer <jwt_token>",
+        "endpoints": [
+          "POST /auth/signup - Create account",
+          "POST /auth/signin - Login, get JWT",
+          "POST /auth/logout-all - Invalidate all sessions"
+        ]
+      }
+    },
+    {
+      "id": "profile-fields",
+      "title": "Profile Field Rules",
+      "icon": "👤",
+      "description": "Profile field constraints and locked fields",
+      "lockedFields": ["full_name", "sex"],
+      "note": "full_name and sex are locked after first-time profile setup"
     }
   ]
 }

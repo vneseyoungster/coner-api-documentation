@@ -1,44 +1,108 @@
 {
   "page": {
     "title": "API Reference",
-    "description": "Complete API endpoint reference with request/response examples"
+    "description": "Complete API endpoint reference with request/response examples",
+    "deprecationNotice": "This page is deprecated. Please use swagger-ui.html for the interactive API documentation."
   },
   "sections": [
-    {
-      "id": "health",
-      "title": "Health Check",
-      "icon": "❤️",
-      "description": "Server health status endpoints"
-    },
     {
       "id": "auth-endpoints",
       "title": "Authentication",
       "icon": "🔐",
-      "description": "User authentication and session management"
-    },
-    {
-      "id": "dev-endpoints",
-      "title": "Development Endpoints",
-      "icon": "🛠️",
-      "description": "Development-only token generation endpoints"
+      "description": "User authentication and session management",
+      "endpoints": [
+        { "method": "POST", "path": "/auth/signup", "description": "Create account" },
+        { "method": "POST", "path": "/auth/signin", "description": "Login, get JWT" },
+        { "method": "GET", "path": "/auth/me", "description": "Get current user" },
+        { "method": "POST", "path": "/auth/logout-all", "description": "Invalidate all sessions" },
+        { "method": "POST", "path": "/auth/bootstrap", "description": "Create profile (auto)" }
+      ]
     },
     {
       "id": "profile-endpoints",
       "title": "User Profile",
       "icon": "👤",
-      "description": "User profile management and updates"
+      "description": "User profile management and updates",
+      "endpoints": [
+        { "method": "GET", "path": "/users/profile", "description": "Get profile" },
+        { "method": "PUT", "path": "/users/profile-first", "description": "First-time setup (all fields required)" },
+        { "method": "PATCH", "path": "/users/profile", "description": "Update profile (partial)" }
+      ]
+    },
+    {
+      "id": "avatar-endpoints",
+      "title": "Avatar",
+      "icon": "🖼️",
+      "description": "User avatar upload and management",
+      "endpoints": [
+        { "method": "POST", "path": "/users/avatar", "description": "Upload avatar (multipart/form-data)" },
+        { "method": "GET", "path": "/users/avatar", "description": "Get avatar URLs" },
+        { "method": "DELETE", "path": "/users/avatar", "description": "Remove avatar" }
+      ]
+    },
+    {
+      "id": "preferences-endpoints",
+      "title": "Preferences & Matching",
+      "icon": "💕",
+      "description": "User preferences, matching questions and queue",
+      "endpoints": [
+        { "method": "GET", "path": "/questions", "description": "Get matching questions" },
+        { "method": "POST", "path": "/answers", "description": "Submit answers" },
+        { "method": "PUT", "path": "/answers", "description": "Update answers" },
+        { "method": "GET", "path": "/answers", "description": "Get user's answers" },
+        { "method": "GET", "path": "/answers/check-exists", "description": "Check if user has submitted answers" },
+        { "method": "GET", "path": "/preferences", "description": "Get preferences" },
+        { "method": "PUT", "path": "/preferences", "description": "Update preferences" },
+        { "method": "POST", "path": "/queue/join", "description": "Join match queue" }
+      ]
+    },
+    {
+      "id": "chat-endpoints",
+      "title": "Chat",
+      "icon": "💬",
+      "description": "Real-time messaging and conversation management",
+      "endpoints": [
+        { "method": "GET", "path": "/api/chat/conversations", "description": "List conversations" },
+        { "method": "GET", "path": "/api/chat/history", "description": "Get messages" },
+        { "method": "GET", "path": "/api/chat/count", "description": "Message count" }
+      ]
+    },
+    {
+      "id": "presence-endpoints",
+      "title": "Presence",
+      "icon": "🟢",
+      "description": "Online status tracking",
+      "endpoints": [
+        { "method": "GET", "path": "/api/presence", "description": "Check online status (query: userIds)" },
+        { "method": "GET", "path": "/api/presence/connections", "description": "All contacts' status" }
+      ]
+    },
+    {
+      "id": "dev-endpoints",
+      "title": "Development Endpoints",
+      "icon": "🛠️",
+      "description": "Development-only endpoints (NODE_ENV=development)",
+      "endpoints": [
+        { "method": "POST", "path": "/dev/auth/token", "description": "Generate test JWT" },
+        { "method": "POST", "path": "/dev/auth/tokens/batch", "description": "Generate multiple tokens" },
+        { "method": "DELETE", "path": "/dev/auth/user/:userId", "description": "Delete test user" }
+      ]
     },
     {
       "id": "errors",
       "title": "Error Handling",
       "icon": "⚠️",
-      "description": "Error response formats and status codes"
-    },
-    {
-      "id": "examples",
-      "title": "Examples",
-      "icon": "📝",
-      "description": "Complete usage examples and code samples"
+      "description": "Error response formats and status codes",
+      "httpCodes": [
+        { "code": 200, "meaning": "Success" },
+        { "code": 201, "meaning": "Created" },
+        { "code": 400, "meaning": "Validation error" },
+        { "code": 401, "meaning": "Unauthorized" },
+        { "code": 403, "meaning": "Forbidden" },
+        { "code": 404, "meaning": "Not found" },
+        { "code": 409, "meaning": "Conflict (duplicate)" },
+        { "code": 500, "meaning": "Server error" }
+      ]
     }
   ]
 }
