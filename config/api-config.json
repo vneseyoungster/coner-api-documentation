@@ -850,7 +850,8 @@
       "id": "matching-endpoints",
       "title": "Matching Queue Endpoints",
       "icon": "heart",
-      "description": "Endpoints for joining the matching queue.",
+      "description": "Real-time connection matching system with geolocation and preference-based scoring. All endpoints are prefixed with <code>/queue</code>.",
+      "info": "<strong>Rate Limits:</strong> Max 10 joins/day, max 3 confirmed matches/day",
       "endpoints": [
         {
           "method": "POST",
@@ -864,7 +865,7 @@
               "placeId": "coffee-123"
             }
           },
-          "requestNote": "For \"Match later\", include timeWindow object",
+          "requestNote": "For \"Match later\", include timeWindow object. If omitted, auto-generates [now+5min, now+6h].",
           "alternateRequestBody": {
             "location": {
               "lat": 10.779783,
@@ -872,13 +873,20 @@
               "placeId": "coffee-123"
             },
             "timeWindow": {
-              "start": "2025-11-14T14:00:00Z",
-              "end": "2025-11-14T16:00:00Z"
+              "start": "2025-12-03T14:00:00Z",
+              "end": "2025-12-03T20:00:00Z"
             }
           },
+          "validation": [
+            { "field": "location.lat", "type": "number", "required": true, "rules": "-90 to 90" },
+            { "field": "location.lng", "type": "number", "required": true, "rules": "-180 to 180" },
+            { "field": "location.placeId", "type": "string", "required": false, "rules": "Optional place identifier" },
+            { "field": "timeWindow.start", "type": "datetime", "required": false, "rules": "ISO 8601 UTC (ends with Z)" },
+            { "field": "timeWindow.end", "type": "datetime", "required": false, "rules": "ISO 8601 UTC, must be after start" }
+          ],
           "codeExamples": {
             "javascript": "const axios = require('axios');\n\n// \"Find now\" example\nconst response = await axios.post('{{baseUrl}}/queue/join', {\n  location: {\n    lat: 10.779783,\n    lng: 106.699018,\n    placeId: 'coffee-123'\n  }\n}, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
-            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\n# \"Match later\" example\ndata = {\n    'location': {\n        'lat': 10.779783,\n        'lng': 106.699018,\n        'placeId': 'coffee-123'\n    },\n    'timeWindow': {\n        'start': '2025-11-14T14:00:00Z',\n        'end': '2025-11-14T16:00:00Z'\n    }\n}\nresponse = requests.post('{{baseUrl}}/queue/join', json=data, headers=headers)\nprint(response.json())",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\n# \"Match later\" example\ndata = {\n    'location': {\n        'lat': 10.779783,\n        'lng': 106.699018,\n        'placeId': 'coffee-123'\n    },\n    'timeWindow': {\n        'start': '2025-12-03T14:00:00Z',\n        'end': '2025-12-03T20:00:00Z'\n    }\n}\nresponse = requests.post('{{baseUrl}}/queue/join', json=data, headers=headers)\nprint(response.json())",
             "curl": "curl -X POST {{baseUrl}}/queue/join \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"location\": {\n      \"lat\": 10.779783,\n      \"lng\": 106.699018,\n      \"placeId\": \"coffee-123\"\n    }\n  }'"
           },
           "responses": [
@@ -890,17 +898,245 @@
                 "queueEntry": {
                   "queueId": "eab71b1c-cb88-4736-9909-ef99e9abb61d",
                   "position": 2,
-                  "joinedAt": "2025-11-14T12:09:14.481Z",
+                  "joinedAt": "2025-12-03T14:00:00Z",
                   "timeWindow": {
-                    "start": "2025-11-14T12:14:14.481Z",
-                    "end": "2025-11-14T18:09:14.481Z"
+                    "start": "2025-12-03T14:05:00Z",
+                    "end": "2025-12-03T20:00:00Z"
                   }
                 }
               }
             }
+          ],
+          "errors": [
+            "400 Bad Request: Invalid location or time window",
+            "409 AlreadyInQueueError: User already has active queue",
+            "409 ActiveSessionExistsError: User has pending match session",
+            "429 DailyLimitExceededError: Exceeded daily join limit (10/day)"
           ]
+        },
+        {
+          "method": "POST",
+          "path": "/queue/leave",
+          "description": "Leave the matching queue voluntarily.",
+          "auth": true,
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.post('{{baseUrl}}/queue/leave', {}, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nresponse = requests.post('{{baseUrl}}/queue/leave', headers=headers)\nprint(response.json())",
+            "curl": "curl -X POST {{baseUrl}}/queue/leave \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "success": true,
+                "queueId": "eab71b1c-cb88-4736-9909-ef99e9abb61d"
+              }
+            }
+          ],
+          "errors": [
+            "404 NoActiveQueueError: No active queue found for user",
+            "409 ActiveSessionExistsError: Cannot leave with active match session"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/queue/status",
+          "description": "Get current queue and session status for the authenticated user.",
+          "auth": true,
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.get('{{baseUrl}}/queue/status', {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nresponse = requests.get('{{baseUrl}}/queue/status', headers=headers)\nprint(response.json())",
+            "curl": "curl -X GET {{baseUrl}}/queue/status \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "description": "When user has an active match proposal",
+              "body": {
+                "success": true,
+                "inQueue": true,
+                "status": "proposed",
+                "queueId": "eab71b1c-cb88-4736-9909-ef99e9abb61d",
+                "joinedAt": "2025-12-03T14:00:00Z",
+                "activeSessionId": "session-uuid",
+                "session": {
+                  "sessionId": "session-uuid",
+                  "state": "pending",
+                  "myDecision": null,
+                  "peerDecision": null,
+                  "peer": {
+                    "id": "peer-uuid",
+                    "displayName": "John",
+                    "avatarUrl": "https://pub-xxx.r2.dev/avatars/peer-uuid/128.webp",
+                    "bio": "Coffee lover"
+                  },
+                  "expiresAt": "2025-12-03T14:03:00Z"
+                }
+              }
+            },
+            {
+              "status": 200,
+              "statusText": "OK",
+              "description": "When user is waiting in queue",
+              "body": {
+                "success": true,
+                "inQueue": true,
+                "status": "queued",
+                "queueId": "eab71b1c-cb88-4736-9909-ef99e9abb61d",
+                "joinedAt": "2025-12-03T14:00:00Z",
+                "activeSessionId": null,
+                "session": null
+              }
+            },
+            {
+              "status": 200,
+              "statusText": "OK",
+              "description": "When user is not in queue",
+              "body": {
+                "success": true,
+                "inQueue": false,
+                "status": null,
+                "queueId": null,
+                "joinedAt": null,
+                "activeSessionId": null,
+                "session": null
+              }
+            }
+          ],
+          "notes": [
+            "<strong>Queue Status Values:</strong> queued, broadening, proposed, matched, cancelled, expired",
+            "<strong>Session States:</strong> pending (waiting for decisions), confirm (both accepted), declined (someone rejected), expired (timeout)"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/queue/sessions/:sessionId/proposal/respond",
+          "description": "Accept or decline a match proposal.",
+          "auth": true,
+          "pathParams": [
+            { "name": "sessionId", "type": "uuid", "description": "The match session ID from the proposal" }
+          ],
+          "requestBody": {
+            "decision": "yes"
+          },
+          "validation": [
+            { "field": "decision", "type": "string", "required": true, "rules": "\"yes\" or \"no\"" }
+          ],
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst sessionId = 'session-uuid';\nconst response = await axios.post(`{{baseUrl}}/queue/sessions/${sessionId}/proposal/respond`, {\n  decision: 'yes'\n}, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nsession_id = 'session-uuid'\ndata = {'decision': 'yes'}\nresponse = requests.post(f'{{baseUrl}}/queue/sessions/{session_id}/proposal/respond', json=data, headers=headers)\nprint(response.json())",
+            "curl": "curl -X POST {{baseUrl}}/queue/sessions/SESSION_ID/proposal/respond \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"decision\": \"yes\"}'"
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "description": "Both users accepted - match confirmed!",
+              "body": {
+                "success": true,
+                "newState": "confirm",
+                "message": "Match confirmed! You're now connected."
+              }
+            },
+            {
+              "status": 200,
+              "statusText": "OK",
+              "description": "Waiting for peer's decision",
+              "body": {
+                "success": true,
+                "newState": "pending",
+                "message": "Waiting for the other user to respond."
+              }
+            },
+            {
+              "status": 200,
+              "statusText": "OK",
+              "description": "Match declined",
+              "body": {
+                "success": true,
+                "newState": "declined",
+                "message": "Match declined."
+              }
+            }
+          ],
+          "errors": [
+            "400 Bad Request: Invalid decision (must be 'yes' or 'no')",
+            "403 UserNotInSessionError: User is not part of this session",
+            "404 MatchSessionNotFoundError: Session not found",
+            "409 AlreadyRespondedError: User already responded to this proposal",
+            "409 InvalidSessionStateError: Session expired or in invalid state"
+          ],
+          "additionalInfo": {
+            "decisionFlow": {
+              "title": "Decision Flow",
+              "content": "How decisions affect the match:",
+              "list": [
+                "<strong>Both YES:</strong> <code>confirm</code> - Match successful, users are connected!",
+                "<strong>You YES, Peer NO:</strong> <code>declined</code> - You return to queue",
+                "<strong>You YES, Peer waiting:</strong> <code>pending</code> - Waiting for peer",
+                "<strong>You NO:</strong> <code>declined</code> - You leave the queue"
+              ]
+            }
+          }
         }
-      ]
+      ],
+      "websocket": {
+        "title": "WebSocket Events",
+        "description": "Connect to <code>/ws/matching</code> for real-time match updates.",
+        "events": [
+          {
+            "name": "match_proposed",
+            "description": "New match proposal received",
+            "payload": {
+              "sessionId": "uuid",
+              "peer": {
+                "id": "uuid",
+                "displayName": "Jane",
+                "avatarUrl": "https://...",
+                "bio": "Coffee lover"
+              },
+              "expiresAt": "2025-12-03T14:03:00Z"
+            }
+          },
+          {
+            "name": "peer_decision",
+            "description": "Peer responded to proposal",
+            "payload": {
+              "sessionId": "uuid",
+              "decision": "yes"
+            }
+          },
+          {
+            "name": "match_confirmed",
+            "description": "Both users accepted - match successful!",
+            "payload": {
+              "sessionId": "uuid",
+              "peer": {
+                "id": "uuid",
+                "displayName": "Jane"
+              }
+            }
+          },
+          {
+            "name": "match_declined",
+            "description": "Someone rejected the match",
+            "payload": {
+              "sessionId": "uuid"
+            }
+          },
+          {
+            "name": "match_expired",
+            "description": "Proposal timed out (3 min)",
+            "payload": {
+              "sessionId": "uuid"
+            }
+          }
+        ]
+      }
     },
     {
       "id": "chat-endpoints",

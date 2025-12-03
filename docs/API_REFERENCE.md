@@ -93,7 +93,7 @@ DELETE /users/avatar
 → { "message": "Avatar deleted successfully" }
 ```
 
-## Preferences & Matching
+## Preferences & Answers
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -104,7 +104,6 @@ DELETE /users/avatar
 | GET | `/answers/check-exists` | Check if user has submitted answers |
 | GET | `/preferences` | Get preferences |
 | PUT | `/preferences` | Update preferences |
-| POST | `/queue/join` | Join match queue |
 
 ### Submit Answers
 ```json
@@ -154,18 +153,103 @@ GET /answers/check-exists
 → { "exists": true }  // or { "exists": false }
 ```
 
+## Matching Queue
+
+Real-time connection matching system with geolocation and preference-based scoring.
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/queue/join` | Join match queue |
+| POST | `/queue/leave` | Leave match queue |
+| GET | `/queue/status` | Get queue & session status |
+| POST | `/queue/sessions/:sessionId/proposal/respond` | Accept/decline match |
+
 ### Join Queue
 ```json
 POST /queue/join
 {
   "location": { "lat": 10.77, "lng": 106.69, "placeId": "place-123" },
   "timeWindow": {  // optional - omit for "match now"
-    "start": "2025-11-14T14:00:00Z",
-    "end": "2025-11-14T16:00:00Z"
+    "start": "2025-12-03T14:00:00Z",
+    "end": "2025-12-03T20:00:00Z"
   }
 }
-→ { "success": true, "queueEntry": { "queueId": "...", "position": 2 } }
+→ {
+  "success": true,
+  "queueEntry": {
+    "queueId": "uuid",
+    "position": 5,
+    "joinedAt": "2025-12-03T14:00:00Z",
+    "timeWindow": { "start": "...", "end": "..." }
+  }
+}
 ```
+
+**Validation**: `lat` (-90 to 90), `lng` (-180 to 180), ISO 8601 UTC timestamps ending with 'Z'
+
+**Errors**: `409 AlreadyInQueueError`, `409 ActiveSessionExistsError`, `429 DailyLimitExceededError`
+
+**Limits**: Max 10 joins/day, max 3 confirmed matches/day
+
+### Leave Queue
+```json
+POST /queue/leave
+→ { "success": true, "queueId": "uuid" }
+```
+
+**Errors**: `404 NoActiveQueueError`, `409 ActiveSessionExistsError`
+
+### Get Queue Status
+```json
+GET /queue/status
+→ {
+  "success": true,
+  "inQueue": true,
+  "status": "proposed",  // queued|broadening|proposed|matched|cancelled|expired
+  "queueId": "uuid",
+  "joinedAt": "2025-12-03T14:00:00Z",
+  "activeSessionId": "session-uuid",
+  "session": {
+    "sessionId": "session-uuid",
+    "state": "pending",
+    "myDecision": null,
+    "peerDecision": null,
+    "peer": {
+      "id": "peer-uuid",
+      "displayName": "John",
+      "avatarUrl": "...",
+      "bio": "..."
+    },
+    "expiresAt": "2025-12-03T14:03:00Z"
+  }
+}
+```
+
+### Respond to Proposal
+```json
+POST /queue/sessions/:sessionId/proposal/respond
+{ "decision": "yes" }  // or "no"
+→ { "success": true, "newState": "confirm", "message": "Match confirmed!" }
+```
+
+**Decision Flow**:
+- Both YES → `confirm` (matched!)
+- You YES, Peer NO → `declined` (return to queue)
+- You NO → `declined` (leave queue)
+
+**Errors**: `403 UserNotInSessionError`, `404 MatchSessionNotFoundError`, `409 AlreadyRespondedError`
+
+### WebSocket Events
+
+Connect to `/ws/matching` for real-time updates:
+
+| Event | Payload | Description |
+|-------|---------|-------------|
+| `match_proposed` | `{ sessionId, peer, expiresAt }` | New match proposal |
+| `peer_decision` | `{ sessionId, decision }` | Peer responded |
+| `match_confirmed` | `{ sessionId, peer }` | Both accepted |
+| `match_declined` | `{ sessionId }` | Someone rejected |
+| `match_expired` | `{ sessionId }` | Proposal timed out |
 
 ## Chat
 
