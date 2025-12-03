@@ -1082,6 +1082,89 @@
               ]
             }
           }
+        },
+        {
+          "method": "POST",
+          "path": "/queue/jobs/run-scan",
+          "description": "Manually trigger the matching algorithm to scan for potential matches.",
+          "auth": true,
+          "danger": "Admin endpoint - requires elevated permissions.",
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.post('{{baseUrl}}/queue/jobs/run-scan', {}, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ADMIN_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ADMIN_TOKEN'}\nresponse = requests.post('{{baseUrl}}/queue/jobs/run-scan', headers=headers)\nprint(response.json())",
+            "curl": "curl -X POST {{baseUrl}}/queue/jobs/run-scan \\\n  -H \"Authorization: Bearer YOUR_ADMIN_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "success": true,
+                "message": "Scan complete"
+              }
+            }
+          ],
+          "notes": [
+            "This endpoint is normally called automatically by the background job scheduler (every 30s)",
+            "Manual triggering is useful for debugging or forcing immediate matching"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/queue/jobs/cleanup-expired",
+          "description": "Clean up expired match proposals and queue entries.",
+          "auth": true,
+          "danger": "Admin endpoint - requires elevated permissions.",
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.post('{{baseUrl}}/queue/jobs/cleanup-expired', {}, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ADMIN_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ADMIN_TOKEN'}\nresponse = requests.post('{{baseUrl}}/queue/jobs/cleanup-expired', headers=headers)\nprint(response.json())",
+            "curl": "curl -X POST {{baseUrl}}/queue/jobs/cleanup-expired \\\n  -H \"Authorization: Bearer YOUR_ADMIN_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "success": true,
+                "message": "Cleanup completed"
+              }
+            }
+          ],
+          "notes": [
+            "Cleans up proposals that exceeded the 3-minute timeout",
+            "Expires queue entries older than 30 minutes",
+            "Normally runs automatically every 60 seconds"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/queue/jobs/reconcile",
+          "description": "Synchronize Redis cache with PostgreSQL database to fix any inconsistencies.",
+          "auth": true,
+          "danger": "Admin endpoint - requires elevated permissions.",
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.post('{{baseUrl}}/queue/jobs/reconcile', {}, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ADMIN_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ADMIN_TOKEN'}\nresponse = requests.post('{{baseUrl}}/queue/jobs/reconcile', headers=headers)\nprint(response.json())",
+            "curl": "curl -X POST {{baseUrl}}/queue/jobs/reconcile \\\n  -H \"Authorization: Bearer YOUR_ADMIN_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "success": true,
+                "message": "Reconciliation completed"
+              }
+            }
+          ],
+          "notes": [
+            "Syncs the Redis waiting set with PostgreSQL queue entries",
+            "Useful after Redis restarts or if data becomes out of sync",
+            "Safe to run at any time - will not affect active matches"
+          ]
         }
       ],
       "websocket": {
