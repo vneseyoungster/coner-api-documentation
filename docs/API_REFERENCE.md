@@ -51,49 +51,7 @@ PUT /users/profile-first
 
 **Note**: `full_name` and `sex` are locked after first setup.
 
-## Avatar
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/users/avatar` | Upload avatar (multipart/form-data) |
-| GET | `/users/avatar` | Get avatar URLs |
-| DELETE | `/users/avatar` | Remove avatar |
-
-### Upload Avatar
-```
-POST /users/avatar
-Content-Type: multipart/form-data
-
-Body: avatar (file) - JPEG, PNG, or WebP, max 5MB, min 64x64px
-
-→ {
-  "message": "Avatar uploaded successfully",
-  "avatarUrl": "https://pub-xxx.r2.dev/avatars/user-123/128.webp?v=1732768800000",
-  "version": 1732768800000,
-  "sizes": {
-    "32": "https://pub-xxx.r2.dev/avatars/user-123/32.webp?v=1732768800000",
-    "64": "https://pub-xxx.r2.dev/avatars/user-123/64.webp?v=1732768800000",
-    "128": "https://pub-xxx.r2.dev/avatars/user-123/128.webp?v=1732768800000",
-    "256": "https://pub-xxx.r2.dev/avatars/user-123/256.webp?v=1732768800000",
-    "512": "https://pub-xxx.r2.dev/avatars/user-123/512.webp?v=1732768800000"
-  }
-}
-```
-
-### Get Avatar URLs
-```json
-GET /users/avatar
-→ { "hasAvatar": true, "urls": { "32": "...", "64": "...", "128": "...", "256": "...", "512": "..." } }
-→ { "hasAvatar": false, "urls": null }  // No avatar
-```
-
-### Delete Avatar
-```json
-DELETE /users/avatar
-→ { "message": "Avatar deleted successfully" }
-```
-
-## Preferences & Answers
+## Preferences
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -101,7 +59,6 @@ DELETE /users/avatar
 | POST | `/answers` | Submit answers |
 | PUT | `/answers` | Update answers |
 | GET | `/answers` | Get user's answers |
-| GET | `/answers/check-exists` | Check if user has submitted answers |
 | GET | `/preferences` | Get preferences |
 | PUT | `/preferences` | Update preferences |
 
@@ -109,147 +66,118 @@ DELETE /users/avatar
 ```json
 POST /answers
 {
-  "question_1": 1,        // 1 or 2
-  "question_2": 2,        // 1, 2, or 3
-  "question_3": [1, 2],   // [1], [2], or [1,2]
-  "question_4": [1, 2, 3] // [1], [2], [3], or [1,2,3]
-}
-→ {
-  "message": "Your answer created",
-  "data": {
-    "id": "uuid",
-    "user_id": "uuid",
-    "question_1": 1,
-    "question_2": 2,
-    "question_3": [1, 2],
-    "question_4": [1, 2, 3],
-    "created_at": "2025-11-27T14:07:25.713Z",
-    "updated_at": "2025-11-27T14:07:25.713Z"
-  }
+  "dating_style": "loud",        // loud | quiet | comfort
+  "match_preference": "same field", // same field | different field | either
+  "user_field": "Engineering",
+  "purpose": "studying"          // studying | working | casual dating
 }
 ```
 
-### Get My Answers
-```json
-GET /answers
-→ {
-  "message": "Your answer fetched",
-  "data": {
-    "id": "uuid",
-    "user_id": "uuid",
-    "question_1": 1,
-    "question_2": 3,
-    "question_3": [1, 2],
-    "question_4": [1, 2, 3],
-    "created_at": "...",
-    "updated_at": "..."
-  }
-}
-```
-
-### Check Answer Exists
-```json
-GET /answers/check-exists
-→ { "exists": true }  // or { "exists": false }
-```
-
-## Matching Queue
-
-Real-time connection matching system with geolocation and preference-based scoring.
+## Queue & Matching
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/queue/join` | Join match queue |
-| POST | `/queue/leave` | Leave match queue |
-| GET | `/queue/status` | Get queue & session status |
-| POST | `/queue/sessions/:sessionId/proposal/respond` | Accept/decline match |
+| POST | `/queue/join` | Join matching queue |
+| POST | `/queue/leave` | Leave queue |
+| GET | `/queue/status` | Get queue status |
+| POST | `/queue/sessions/:sessionId/proposal/respond` | Accept/reject match |
 
 ### Join Queue
 ```json
 POST /queue/join
 {
-  "location": { "lat": 10.77, "lng": 106.69, "placeId": "place-123" },
-  "timeWindow": {  // optional - omit for "match now"
-    "start": "2025-12-03T14:00:00Z",
-    "end": "2025-12-03T20:00:00Z"
+  "location": { "lat": 49.4521, "lng": 11.0767, "placeId": "optional" },
+  "timeWindow": {  // Optional - omit for "match now"
+    "start": "2025-11-28T14:00:00Z",
+    "end": "2025-11-28T16:00:00Z"
   }
 }
-→ {
-  "success": true,
-  "queueEntry": {
-    "queueId": "uuid",
-    "position": 5,
-    "joinedAt": "2025-12-03T14:00:00Z",
-    "timeWindow": { "start": "...", "end": "..." }
-  }
-}
+→ 201 { "success": true, "queueEntry": { "queueId": "uuid", "position": 2, "status": "queued" } }
+
+// Errors
+→ 409 "Already in an active queue"
+→ 429 "Daily match limit exceeded (max: 3)"
 ```
 
-**Validation**: `lat` (-90 to 90), `lng` (-180 to 180), ISO 8601 UTC timestamps ending with 'Z'
-
-**Errors**: `409 AlreadyInQueueError`, `409 ActiveSessionExistsError`, `429 DailyLimitExceededError`
-
-**Limits**: Max 10 joins/day, max 3 confirmed matches/day
-
-### Leave Queue
-```json
-POST /queue/leave
-→ { "success": true, "queueId": "uuid" }
-```
-
-**Errors**: `404 NoActiveQueueError`, `409 ActiveSessionExistsError`
-
-### Get Queue Status
+### Queue Status
 ```json
 GET /queue/status
-→ {
-  "success": true,
+→ 200 {
   "inQueue": true,
-  "status": "proposed",  // queued|broadening|proposed|matched|cancelled|expired
+  "status": "queued",        // queued | broadening | proposed
   "queueId": "uuid",
-  "joinedAt": "2025-12-03T14:00:00Z",
-  "activeSessionId": "session-uuid",
-  "session": {
-    "sessionId": "session-uuid",
-    "state": "pending",
-    "myDecision": null,
-    "peerDecision": null,
-    "peer": {
-      "id": "peer-uuid",
-      "displayName": "John",
-      "avatarUrl": "...",
-      "bio": "..."
-    },
-    "expiresAt": "2025-12-03T14:03:00Z"
-  }
+  "position": 2,
+  "hasSession": false,
+  "activeSessionId": null
+}
+
+// When matched
+→ 200 {
+  "status": "proposed",
+  "hasSession": true,
+  "activeSessionId": "uuid",
+  "sessionExpiresAt": "2025-11-28T10:03:00Z"  // 3min to respond
 }
 ```
 
-### Respond to Proposal
+### Respond to Match
 ```json
 POST /queue/sessions/:sessionId/proposal/respond
 { "decision": "yes" }  // or "no"
-→ { "success": true, "newState": "confirm", "message": "Match confirmed!" }
+
+→ 200 { 
+  "success": true, 
+  "newState": "confirm",           // confirm | pending | declined
+  "message": "Match confirmed!"
+}
+
+// Errors
+→ 404 SESSION_NOT_FOUND
+→ 409 ALREADY_RESPONDED
+→ 400 INVALID_SESSION_STATE
 ```
 
-**Decision Flow**:
-- Both YES → `confirm` (matched!)
-- You YES, Peer NO → `declined` (return to queue)
-- You NO → `declined` (leave queue)
+**Queue Lifecycle/ Status**: `queued` (0-7min) → `broadening` (7-30min) → `proposed` (when matched) → `matched`/`expired`
 
-**Errors**: `403 UserNotInSessionError`, `404 MatchSessionNotFoundError`, `409 AlreadyRespondedError`
+**Response States**:
+```json
+// Immediate response after first user responds
+{ "newState": "pending", "message": "Waiting for the other user." }
 
-### WebSocket Events
+// Both accept
+{ "newState": "confirm", "message": "Match confirmed! You can now start chatting." }
 
-Connect to `/ws/matching` for real-time updates:
+// Match declined (someone said NO)
+{ "newState": "declined", "message": "Match declined. You've been returned to the queue." }
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `match_proposed` | `{ sessionId, peer, expiresAt }` | New match proposal |
-| `peer_decision` | `{ sessionId, decision }` | Peer responded |
-| `match_confirmed` | `{ sessionId, peer }` | Both accepted |
-| `match_declined` | `{ sessionId }` | Someone rejected |
-| `match_expired` | `{ sessionId }` | Proposal timed out |
+// Late response (session already declined by other user)
+{ "newState": "declined", "message": "Match declined. Your response has been recorded." }
+```
+
+**Detailed Response Scenarios**:
+
+| Scenario | User A | User B | A Queue Status | B Queue Status | Session State |
+|----------|--------|--------|----------------|----------------|---------------|
+| Both accept | YES | YES | `matched` | `matched` | `confirm` |
+| First accepts, second rejects | YES | NO | `queued` (returned) | `cancelled` | `declined` |
+| First rejects, second accepts late | NO | YES | `cancelled` | `queued` (stays) | `declined` |
+| Both reject | NO | NO (late) | `cancelled` | `cancelled` | `declined` |
+| One responds YES, other silent | YES | ⏱️ | `queued` (returned) | `expired` (kicked) | `expired` |
+| One responds NO, other silent | NO | ⏱️ | `cancelled` | `queued` (stays) | `declined` |
+| Both silent (timeout) | ⏱️ | ⏱️ | `expired` | `expired` | `expired` |
+
+**Key Business Logic**:
+- ✅ **First NO immediately declines** → Session becomes `declined`, other user can still respond late
+- ✅ **Late responses allowed** → Can respond to `declined` sessions, decision is recorded
+- ✅ **Only rejectors (NO) get cancelled** → Acceptors/non-responders get second chance
+- ✅ **Both silent = both kicked** → Strict policy to discourage inactive users (3min timeout)
+- ✅ **One silent, one responded** → Active user returns to queue, silent user expires
+- ✅ **Late NO after early NO** → Both users cancelled (both rejected)
+
+**Timeout Handling**:
+- **Proposal expires** after 3 minutes (`sessionExpiresAt`)
+- After timeout, cleanup job processes within ~60 seconds
+- Poll `/queue/status` to detect state change back to `queued` or `expired`
 
 ## Chat
 
@@ -289,6 +217,150 @@ GET /api/chat/history?connectionId=uuid&limit=50&before=2025-01-20T10:00:00Z
 ```json
 GET /api/presence/connections
 → { "presence": { "user-id-1": true, "user-id-2": false } }
+```
+## Activities
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/activities` | Get user activities list |
+| PATCH | `/activities/:id/cancel` | Cancel an upcoming appointment |
+
+### Get User Activities
+Supports filtering by tabs: `ongoing` (includes active queue), `upcoming`, `completed`, `cancelled`.
+
+```json
+GET /activities?tab=ongoing
+→ {
+  "message": "Get activities successfully",
+  "data": [
+    {
+      "id": "55555555-5555-4555-a555-555555555555",
+      "type": "queue",
+      "status": "searching",
+      "status_label": "Đang tìm Buddy...",
+      "created_at": "2025-12-02T15:12:37.554687+00:00",
+      "partner": null,
+      "location_name": "Gần đây",
+      "location_address": "Đang quét...",
+      "date_display": "Ngay bây giờ"
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440006", 
+      "type": "session",
+      "status": "ongoing",
+      "status_label": "Đang diễn ra",
+      "created_at": "2025-12-02T15:12:37.554687+00:00",
+      "partner": {
+        "id": "12db0233-aee5-4eeb-9ca5-5467f11ff965",
+        "display_name": "Người dùng ẩn danh",
+        "avatar_url": "",
+        "profession": null
+      },
+      "location_name": "Highlands Coffee - Vincom",
+      "location_address": "789 Vincom St, City",
+      "date_display": "02/12/2025 22:42"
+    }
+  ]
+}
+```
+
+### Cancel Appointment
+Only applicable for appointments with up coming status. No body required.
+
+```json
+PATCH /activities/550e8400-e29b-41d4-a716-446655440006/cancel
+Body: {}
+→ {
+  "message": "Appointment cancelled successfully"
+}
+```
+
+## Block
+
+User blocking functionality to prevent unwanted interactions.
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/block/users/:id` | Block a user |
+| DELETE | `/block/users/:id` | Unblock a user |
+| GET | `/block/users/:id/check` | Check if blocked by/blocking a user |
+| GET | `/block/users` | Get list of blocked users |
+
+### Block User
+Block another user. Blocked users cannot interact with you.
+
+```json
+POST /block/users/550e8400-e29b-41d4-a716-446655440006
+Body: { "reason": "Spam" }  // reason is optional
+→ 201 {
+  "success": true,
+  "message": "User blocked successfully",
+  "data": {
+    "blocker_id": "your-user-id",
+    "blocked_id": "550e8400-e29b-41d4-a716-446655440006",
+    "reason": "Spam",
+    "created_at": "2025-12-04T10:00:00Z"
+  }
+}
+
+// Errors
+→ 400 { "error": "Cannot block yourself" }
+→ 409 { "error": "User already blocked" }
+```
+
+### Unblock User
+Remove a block on a user.
+
+```json
+DELETE /block/users/550e8400-e29b-41d4-a716-446655440006
+→ 200 {
+  "success": true,
+  "message": "User unblocked successfully"
+}
+
+// Errors
+→ 404 { "error": "Block relationship not found" }
+```
+
+### Check Block Status
+Check if there's a block relationship between you and another user.
+
+```json
+GET /block/users/550e8400-e29b-41d4-a716-446655440006/check
+→ 200 {
+  "success": true,
+  "data": {
+    "isBlocked": true,
+    "blockedBy": "550e8400-e29b-41d4-a716-446655440006",
+    "direction": "blocked"  // blocker | blocked | both
+  }
+}
+
+// No block exists
+→ 200 {
+  "success": true,
+  "data": {
+    "isBlocked": false
+  }
+}
+```
+
+### Get Blocked Users
+Get list of all users you have blocked.
+
+```json
+GET /block/users
+→ 200 {
+  "success": true,
+  "data": [
+    {
+      "blocker_id": "your-user-id",
+      "blocked_id": "550e8400-e29b-41d4-a716-446655440006",
+      "reason": "Spam",
+      "created_at": "2025-12-04T10:00:00Z"
+    }
+  ]
+}
 ```
 
 ## Dev Endpoints

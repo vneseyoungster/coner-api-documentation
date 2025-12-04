@@ -1386,6 +1386,156 @@
       ]
     },
     {
+      "id": "block-endpoints",
+      "title": "Block Endpoints",
+      "icon": "user-x",
+      "description": "User blocking functionality to prevent unwanted interactions. All endpoints are prefixed with <code>/block</code> and require authentication.",
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/block/users/:id",
+          "description": "Block another user. Blocked users cannot interact with you.",
+          "auth": true,
+          "pathParams": [
+            { "name": "id", "type": "uuid", "description": "The user ID to block" }
+          ],
+          "requestBody": {
+            "reason": "Spam"
+          },
+          "requestNote": "The reason field is optional.",
+          "validation": [
+            { "field": "reason", "type": "string", "required": false, "rules": "Optional reason for blocking" }
+          ],
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst userId = '550e8400-e29b-41d4-a716-446655440006';\nconst response = await axios.post(`{{baseUrl}}/block/users/${userId}`, {\n  reason: 'Spam'\n}, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nuser_id = '550e8400-e29b-41d4-a716-446655440006'\ndata = {'reason': 'Spam'}\nresponse = requests.post(f'{{baseUrl}}/block/users/{user_id}', json=data, headers=headers)\nprint(response.json())",
+            "curl": "curl -X POST {{baseUrl}}/block/users/550e8400-e29b-41d4-a716-446655440006 \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"reason\": \"Spam\"}'"
+          },
+          "responses": [
+            {
+              "status": 201,
+              "statusText": "Created",
+              "body": {
+                "success": true,
+                "message": "User blocked successfully",
+                "data": {
+                  "blocker_id": "your-user-id",
+                  "blocked_id": "550e8400-e29b-41d4-a716-446655440006",
+                  "reason": "Spam",
+                  "created_at": "2025-12-04T10:00:00Z"
+                }
+              }
+            }
+          ],
+          "errors": [
+            "400 Bad Request: Cannot block yourself",
+            "409 Conflict: User already blocked"
+          ]
+        },
+        {
+          "method": "DELETE",
+          "path": "/block/users/:id",
+          "description": "Remove a block on a user.",
+          "auth": true,
+          "pathParams": [
+            { "name": "id", "type": "uuid", "description": "The user ID to unblock" }
+          ],
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst userId = '550e8400-e29b-41d4-a716-446655440006';\nconst response = await axios.delete(`{{baseUrl}}/block/users/${userId}`, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nuser_id = '550e8400-e29b-41d4-a716-446655440006'\nresponse = requests.delete(f'{{baseUrl}}/block/users/{user_id}', headers=headers)\nprint(response.json())",
+            "curl": "curl -X DELETE {{baseUrl}}/block/users/550e8400-e29b-41d4-a716-446655440006 \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "success": true,
+                "message": "User unblocked successfully"
+              }
+            }
+          ],
+          "errors": [
+            "404 Not Found: Block relationship not found"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/block/users/:id/check",
+          "description": "Check if there's a block relationship between you and another user.",
+          "auth": true,
+          "pathParams": [
+            { "name": "id", "type": "uuid", "description": "The user ID to check block status for" }
+          ],
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst userId = '550e8400-e29b-41d4-a716-446655440006';\nconst response = await axios.get(`{{baseUrl}}/block/users/${userId}/check`, {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nuser_id = '550e8400-e29b-41d4-a716-446655440006'\nresponse = requests.get(f'{{baseUrl}}/block/users/{user_id}/check', headers=headers)\nprint(response.json())",
+            "curl": "curl -X GET {{baseUrl}}/block/users/550e8400-e29b-41d4-a716-446655440006/check \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "description": "When a block relationship exists",
+              "body": {
+                "success": true,
+                "data": {
+                  "isBlocked": true,
+                  "blockedBy": "550e8400-e29b-41d4-a716-446655440006",
+                  "direction": "blocked"
+                }
+              }
+            },
+            {
+              "status": 200,
+              "statusText": "OK",
+              "description": "When no block relationship exists",
+              "body": {
+                "success": true,
+                "data": {
+                  "isBlocked": false
+                }
+              }
+            }
+          ],
+          "notes": [
+            "<strong>Direction values:</strong> <code>blocker</code> (you blocked them), <code>blocked</code> (they blocked you), <code>both</code> (mutual block)"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/block/users",
+          "description": "Get list of all users you have blocked.",
+          "auth": true,
+          "requestBody": null,
+          "codeExamples": {
+            "javascript": "const axios = require('axios');\n\nconst response = await axios.get('{{baseUrl}}/block/users', {\n  headers: {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n  }\n});\nconsole.log(response.data);",
+            "python": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_ACCESS_TOKEN'}\nresponse = requests.get('{{baseUrl}}/block/users', headers=headers)\nprint(response.json())",
+            "curl": "curl -X GET {{baseUrl}}/block/users \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\""
+          },
+          "responses": [
+            {
+              "status": 200,
+              "statusText": "OK",
+              "body": {
+                "success": true,
+                "data": [
+                  {
+                    "blocker_id": "your-user-id",
+                    "blocked_id": "550e8400-e29b-41d4-a716-446655440006",
+                    "reason": "Spam",
+                    "created_at": "2025-12-04T10:00:00Z"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "errors",
       "title": "Error Handling",
       "icon": "alert-triangle",

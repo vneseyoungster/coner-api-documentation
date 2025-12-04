@@ -5,6 +5,10 @@
       "version": "Unreleased",
       "date": "2025-11-29",
       "added": [
+        "User Block System - POST /block/users/:id to block a user with optional reason",
+        "DELETE /block/users/:id - Unblock a user",
+        "GET /block/users/:id/check - Check block status (direction: blocker/blocked/both)",
+        "GET /block/users - Get list of all blocked users",
         "User Preference Module - PUT/GET/DELETE /preferences endpoints",
         "GET /preferences/check-completed - Check if user completed preference setup",
         "Matching Questions System - GET /questions for active matching questions",
